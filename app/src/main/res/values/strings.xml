@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">DnD Char</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_attack_results">AttackResultsActivity</string>
+
+    <string name="attackNum">Attack Number: %1$d</string>
+    <string name="roll">Roll: %1$d</string>
+    <string name="hit">Hit: %1$d</string>
+    <string name="damage">Damage: %1$d</string>
+</resources>
