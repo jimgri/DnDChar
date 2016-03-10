@@ -1,5 +1,11 @@
 package com.jim_griggs.model;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,10 +60,17 @@ public class Character {
 
     public ArrayList<Attack> attacks;
     public Collection<Bonus> ACBonuses;
-    public Collection<Bonus> MovementBonuses;
+    public Collection<Bonus> movementBonuses;
+    public ArrayList<Feat> feats;
 
+    public static Character getInstance() {
+        if(mInstance == null) {
+            mInstance = new Character();
+        }
+        return mInstance;
+    }
 
-    private Character() {
+    public Character() {
         // Exists only to defeat instantiation.
         level = 10;
         name = "Balta";
@@ -68,8 +81,12 @@ public class Character {
         maxHP = 187;
         currentHP = maxHP;
 
-        ACBonuses = new ArrayList<>();
-        MovementBonuses = new ArrayList<>();
+        ACBonuses = new ArrayList<>(3);
+        ACBonuses.add(new Bonus(Bonus.BONUS_ARMOR, 6));
+        ACBonuses.add(new Bonus(Bonus.BONUS_STAT, 3));
+        ACBonuses.add(new Bonus(Bonus.BONUS_FEAT, 2));
+
+        movementBonuses = new ArrayList<>();
 
         stats = new HashMap<>();
         Stat str = new Stat(this, Stat.TYPE_STR, 18, true);
@@ -98,7 +115,7 @@ public class Character {
         skills.get(Skill.SKILL_PERSUASION).proficient = true;
 
         attacks = new ArrayList<>();
-        Attack a1 = new Attack("primary1", 1, 8);
+        Attack a1 = new Attack("primary1", 2, 8);
         a1.addAttackBonus(getProfBonus());
         a1.addAttackBonus(str.getStatBonus());
         a1.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 3));
@@ -123,13 +140,76 @@ public class Character {
         a4.addAttackBonus(str.getStatBonus());
         a4.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 1));
         attacks.add(a4);
+        mInstance = this;
     }
 
-    public static Character getInstance() {
-        if(mInstance == null) {
-            mInstance = new Character();
+    public Character(JSONObject json){
+        try {
+            name = json.getString("name");
+            playerName = json.getString("playername");
+            race = json.getString("race");
+            alignment = json.getString("alignment");
+            XP = json.getInt("XP");
+            maxHP = json.getInt("maxhp");
+            currentHP = maxHP;
+            baseMovement = json.getInt("baseMovement");
+
+            movementBonuses = new ArrayList<>();
+
+            JSONObject charObject = json.getJSONObject("class");
+            level = charObject.getInt("level");
+            charClass = charObject.getString("class");
+            Log.i("fileData", charClass);
+
+            JSONArray acBonuses = json.getJSONArray("AC");
+            ACBonuses = new ArrayList<>(acBonuses.length());
+            for (int i=0; i<acBonuses.length(); i++) {
+                ACBonuses.add(new Bonus((JSONObject) acBonuses.get(i)));
+            }
+
+            JSONArray charStats = json.getJSONArray("stats");
+            stats = new HashMap<>();
+            for (int i=0; i<charStats.length(); i++){
+                Stat s = new Stat(this, (JSONObject) charStats.get(i));
+                stats.put(s.type, s);
+            }
+
+            JSONArray charSkills = json.getJSONArray("skillProficiencies");
+            skills = new HashMap<>(charSkills.length());
+            for (int i=0; i<charSkills.length(); i++) {
+                Skill s = new Skill(this, (JSONObject) charSkills.get(i));
+                skills.put(s.skill_type, s);
+            }
+
+            JSONArray charAttacks = json.getJSONArray("attacks");
+            attacks = new ArrayList<>(charAttacks.length());
+            for (int i=0; i<charAttacks.length(); i++){
+                attacks.add(new Attack(this, (JSONObject) charAttacks.get(i)));
+            }
+
+            Log.i ("init Feats", "");
+            JSONArray jsonFeats = json.getJSONArray("feats");
+            feats = new ArrayList<>(jsonFeats.length());
+            for (int i = 0; i < jsonFeats.length(); i++) {
+                feats.add(new Feat((JSONObject) jsonFeats.get(i)));
+            }
+
+            mInstance = this;
+        } catch (JSONException ex) {
+            ex.printStackTrace();
         }
-        return mInstance;
+    }
+
+    public Collection<Bonus> getACBonuses(){
+        return ACBonuses;
+    }
+
+    public int getAC(){
+        int result = 0;
+        for (Bonus b : ACBonuses){
+            result += b.value;
+        }
+        return result;
     }
 
     public Bonus getProfBonus(){
@@ -174,14 +254,10 @@ public class Character {
 
     public int getMovement() {
         int moveBonuses = 0;
-        for (Bonus moveBonus : MovementBonuses){
+        for (Bonus moveBonus : movementBonuses){
             moveBonuses += moveBonus.value;
         }
         return baseMovement + moveBonuses;
-    }
-
-    public int getAC(){
-        return 0;
     }
 
     public int takeDamage(int damage){

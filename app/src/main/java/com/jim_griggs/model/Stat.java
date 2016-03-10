@@ -1,5 +1,8 @@
 package com.jim_griggs.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,6 +23,17 @@ public class Stat {
         this.mChar = character;
         this.type = type;
         this.value = value;
+    }
+
+    public Stat(Character character, JSONObject json){
+        this.mChar = character;
+        try {
+            this.type = json.getString("type");
+            this.value = json.getInt("value");
+            this.proficient = json.getBoolean("save");
+        } catch (JSONException ex){
+            ex.printStackTrace();
+        }
     }
 
     public Stat(Character character, String type, int value, boolean proficient){

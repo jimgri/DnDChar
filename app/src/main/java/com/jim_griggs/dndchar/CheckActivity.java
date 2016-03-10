@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class CheckActivity extends AppCompatActivity implements RollFragment.RollFragmentListener{
+    public static final String CHECK_TITLE = "Check_Title";
+    public static final String CHECK_BONUSES = "Check_Bonuses";
+    public static final String CHECK_TYPE = "Check_Type";
+
+    public static final String TYPE_BONUS = "Bonus";
+    public static final String TYPE_CHECK = "Check";
+
     private int bonusTotal = 0;
 
     @Override
@@ -19,21 +26,33 @@ public class CheckActivity extends AppCompatActivity implements RollFragment.Rol
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check);
 
+        // Load the page title.
+        String title = getIntent().getStringExtra(CHECK_TITLE);
+        TextView pageTitle = (TextView) findViewById(R.id.checkTitle);
+        pageTitle.setText(title);
+
+        // Load the page type.
+        String type = getIntent().getStringExtra(CHECK_TYPE);
+        if (type == null) {
+            type = TYPE_CHECK;
+        }
+
         // Load the bonus Collection
-        Collection<Bonus> bonuses = (ArrayList<Bonus>) getIntent().getSerializableExtra(CharActivity.CHECK_MESSAGE);
+        Collection<Bonus> bonuses = (ArrayList<Bonus>) getIntent().getSerializableExtra(CHECK_BONUSES);
         Log.i("Bonus Array Size", Integer.toString(bonuses.size()));
 
         LinearLayout table = (LinearLayout) findViewById(R.id.checkBonuses);
-        for (Bonus b : bonuses){
+        for (Bonus b : bonuses) {
             addBonusToTable(table, b);
             bonusTotal += b.value;
         }
 
-        RollFragment rollFrag = RollFragment.newInstance("check", 1, 20);
-        // Add the fragment to the Layout
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.checkDice, rollFrag).commit();
-
+        if (type.equals(TYPE_CHECK)) {
+            RollFragment rollFrag = RollFragment.newInstance("check", 1, 20);
+            // Add the fragment to the Layout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.checkDice, rollFrag).commit();
+        }
     }
 
     private void addBonusToTable(LinearLayout table, Bonus bonus){

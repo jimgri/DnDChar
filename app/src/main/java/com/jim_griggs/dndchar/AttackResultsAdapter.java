@@ -15,7 +15,7 @@ import com.jim_griggs.model.Character;
 import com.jim_griggs.model.Bonus;
 
 public class AttackResultsAdapter extends ArrayAdapter<Attack> {
-    private Context mContext;
+    private final Context mContext;
 
     // Constructor
     public AttackResultsAdapter(Context context, int resource, Collection<Attack> objects) {

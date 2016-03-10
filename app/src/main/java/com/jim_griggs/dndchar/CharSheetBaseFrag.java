@@ -13,6 +13,13 @@ import com.jim_griggs.model.Character;
 import com.jim_griggs.model.Stat;
 
 public class CharSheetBaseFrag extends Fragment {
+    private static final int SAVE_STR_ID = 100;
+    private static final int SAVE_DEX_ID = 101;
+    private static final int SAVE_CON_ID = 102;
+    private static final int SAVE_INT_ID = 103;
+    private static final int SAVE_WIS_ID = 104;
+    private static final int SAVE_CHA_ID = 105;
+
     private Character c;
 
     private TextView charName;
@@ -25,15 +32,13 @@ public class CharSheetBaseFrag extends Fragment {
     private TextView charAC;
     private TextView charInit;
 
-    private View saveStr;
-    private View saveDex;
-    private View saveCon;
-    private View saveInt;
-    private View saveWis;
-    private View saveCha;
-
     public CharSheetBaseFrag() {
         // Required empty public constructor
+    }
+
+    public static CharSheetBaseFrag newInstance() {
+        CharSheetBaseFrag fragment = new CharSheetBaseFrag();
+        return fragment;
     }
 
     @Override
@@ -44,8 +49,7 @@ public class CharSheetBaseFrag extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_char_sheet_base, container, false);
         charName = (TextView) rootView.findViewById(R.id.charName);
@@ -58,6 +62,9 @@ public class CharSheetBaseFrag extends Fragment {
         charAC = (TextView) rootView.findViewById(R.id.charAC);
         charInit = (TextView) rootView.findViewById(R.id.charInit);
 
+        RelativeLayout acBox = (RelativeLayout) rootView.findViewById(R.id.acBox);
+        acBox.setOnClickListener(new ACListener());
+
         LinearLayout statLayout = (LinearLayout) rootView.findViewById(R.id.statLayout);
         CreateStatView(inflater, statLayout, c.stats.get(Stat.TYPE_STR));
         CreateStatView(inflater, statLayout, c.stats.get(Stat.TYPE_DEX));
@@ -68,19 +75,18 @@ public class CharSheetBaseFrag extends Fragment {
 
         LinearLayout saveLayout = (LinearLayout) rootView.findViewById(R.id.saveLayout);
         SaveListener listener = new SaveListener();
-        saveStr = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_STR));
-        saveDex = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_DEX));
-        saveCon = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_CON));
-        saveInt = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_INT));
-        saveWis = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_WIS));
-        saveCha = CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_CHA));
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_STR), SAVE_STR_ID);
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_DEX), SAVE_DEX_ID);
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_CON), SAVE_CON_ID);
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_INT), SAVE_INT_ID);
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_WIS), SAVE_WIS_ID);
+        CreateSaveView(inflater, saveLayout, listener, c.stats.get(Stat.TYPE_CHA), SAVE_CHA_ID);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         charName.setText(c.name);
         charClass.setText(String.format("%1$s %2$d", c.charClass, c.level));
         charRace.setText(c.race);
@@ -104,45 +110,48 @@ public class CharSheetBaseFrag extends Fragment {
         parent.addView(statBox);
     }
 
-    private View CreateSaveView(LayoutInflater inflater, ViewGroup parent, View.OnClickListener listener, Stat stat){
+    private void CreateSaveView(LayoutInflater inflater, ViewGroup parent, View.OnClickListener listener, Stat stat, int viewID){
         ViewGroup saveBox = (ViewGroup) inflater.inflate(R.layout.save_template, parent, false);
+        saveBox.setId(viewID);
         saveBox.setOnClickListener(listener);
         TextView saveStat = (TextView) saveBox.findViewById(R.id.saveStat);
         TextView saveValue = (TextView) saveBox.findViewById(R.id.saveValue);
         saveStat.setText(stat.type);
         saveValue.setText(toBonusString(stat.getSaveBonus()));
         parent.addView(saveBox);
-        return saveBox;
     }
 
-    private class SaveListener implements View.OnClickListener{
+    private class ACListener implements View.OnClickListener {
         CharActivity baseActivity = (CharActivity) getActivity();
-
         @Override
         public void onClick(View view){
-            if (view.equals(saveStr))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_STR).getSaveBonuses());
-            }
-            else if (view.equals(saveDex))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_DEX).getSaveBonuses());
-            }
-            else if (view.equals(saveCon))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_CON).getSaveBonuses());
-            }
-            else if (view.equals(saveInt))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_INT).getSaveBonuses());
-            }
-            else if (view.equals(saveWis))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_WIS).getSaveBonuses());
-            }
-            else if (view.equals(saveCha))
-            {
-                baseActivity.launchCheckActivity(c.stats.get(Stat.TYPE_CHA).getSaveBonuses());
+            baseActivity.launchCheckActivity(getString(R.string.ACTitle), CheckActivity.TYPE_BONUS, c.getACBonuses());
+        }
+    }
+
+    private class SaveListener implements View.OnClickListener {
+        CharActivity baseActivity = (CharActivity) getActivity();
+        @Override
+        public void onClick(View view){
+            switch (view.getId()) {
+                case SAVE_STR_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
+                case SAVE_DEX_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
+                case SAVE_CON_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
+                case SAVE_INT_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
+                case SAVE_WIS_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
+                case SAVE_CHA_ID:
+                    baseActivity.launchCheckActivity(String.format(getString(R.string.saveTitle), Stat.TYPE_STR), CheckActivity.TYPE_CHECK, c.stats.get(Stat.TYPE_STR).getSaveBonuses());
+                    break;
             }
         }
     }

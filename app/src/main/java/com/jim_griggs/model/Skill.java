@@ -1,5 +1,8 @@
 package com.jim_griggs.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -40,6 +43,17 @@ public class Skill {
         this.skill_type = skill_type;
         this.stat_type = stat_type;
         this.proficient = proficient;
+    }
+
+    public Skill (Character character, JSONObject json){
+        this.mChar = character;
+        try {
+            this.skill_type = json.getString("type");
+            this.stat_type = json.getString("stat");
+            this.proficient = json.getBoolean("proficient");
+        } catch (JSONException ex){
+            ex.printStackTrace();
+        }
     }
 
     public int calcSkillCheck(int roll){

@@ -8,16 +8,25 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
+
+import com.jim_griggs.data_adapter.JSONLoader;
 import com.jim_griggs.model.Character;
 import com.jim_griggs.model.Bonus;
+import com.jim_griggs.model.Feat;
 
-public class CharActivity extends AppCompatActivity {
+public class CharActivity extends AppCompatActivity implements FeatListItem.FeatItemListener {
     public final static String ATTACK_MESSAGE = "attack_number";
-    public final static String CHECK_MESSAGE = "bonuses";
     private final static int ATTACK_REQUEST = 1;
     private int currentAttack;
     private Character c;
@@ -28,9 +37,22 @@ public class CharActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Load the character from file.
+        JSONLoader jl = new JSONLoader();
+        try {
+            jl.loadCharacterFile(this.getAssets().open(getString(R.string.saveFile)));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         c = Character.getInstance();
 
         setContentView(R.layout.activity_char);
+
+        // Set the activity toolbar.
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.appToolbar);
+        setSupportActionBar(myToolbar);
 
         mPagerAdapter = new CharPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.charPager);
@@ -55,14 +77,35 @@ public class CharActivity extends AppCompatActivity {
         });
     }
 
-    public void onAttackButtonClick(View view){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.toolbarAttack:
+                performAttack();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void performAttack(){
         currentAttack = 0;
         launchAttackActivity(currentAttack);
     }
 
-    public void launchCheckActivity(Collection<Bonus> bonuses){
+    public void launchCheckActivity(String pageTitle, String pageType, Collection<Bonus> bonuses){
         Intent i = new Intent(this, CheckActivity.class);
-        i.putExtra(CHECK_MESSAGE, (Serializable) bonuses);
+        i.putExtra(CheckActivity.CHECK_TITLE, pageTitle);
+        i.putExtra(CheckActivity.CHECK_TYPE, pageType);
+        i.putExtra(CheckActivity.CHECK_BONUSES, (Serializable) bonuses);
         startActivity(i);
     }
 
@@ -94,6 +137,12 @@ public class CharActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onFeatItemClick(Feat feat){
+        int feat_position = c.feats.indexOf(feat);
+        Intent i = new Intent(this, FeatDetailsActivity.class);
+        i.putExtra(FeatDetailsActivity.FEAT_ID, feat_position);
+        startActivity(i);
+    }
 
     private class CharPagerAdapter extends FragmentPagerAdapter{
         public CharPagerAdapter(FragmentManager fm) {
@@ -106,10 +155,13 @@ public class CharActivity extends AppCompatActivity {
             Log.i("getFragmentItem", Integer.toString(position));
             switch (position){
                 case 1:
-                    fragment = new SkillsFrag();
+                    fragment = SkillsFrag.newInstance();
+                    break;
+                case 2:
+                    fragment = FeatsFragment.newInstance();
                     break;
                 default:
-                    fragment = new CharSheetBaseFrag();
+                    fragment = CharSheetBaseFrag.newInstance();
                     break;
             }
             return fragment;
@@ -117,7 +169,7 @@ public class CharActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -125,8 +177,10 @@ public class CharActivity extends AppCompatActivity {
             switch (position){
                 case 1:
                     return "Skills";
+                case 2:
+                    return "Feats";
                 default:
-                    return "Character Sheet";
+                    return "Overview";
             }
         }
     }

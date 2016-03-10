@@ -25,6 +25,11 @@ public class SkillsFrag extends Fragment {
         // Required empty public constructor
     }
 
+    public static SkillsFrag newInstance() {
+        SkillsFrag fragment = new SkillsFrag();
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,7 +47,7 @@ public class SkillsFrag extends Fragment {
                                     int position, long id) {
                 Skill skill = (Skill) parent.getAdapter().getItem(position);
                 CharActivity act = (CharActivity) getActivity();
-                act.launchCheckActivity(skill.getSkillBonuses());
+                act.launchCheckActivity(String.format(getString(R.string.skillTitle), skill.skill_type), CheckActivity.TYPE_CHECK, skill.getSkillBonuses());
             }
         });
     }

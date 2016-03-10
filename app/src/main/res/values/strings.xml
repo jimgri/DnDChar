@@ -8,4 +8,10 @@
     <string name="roll">Roll: %1$d</string>
     <string name="hit">Hit: %1$d</string>
     <string name="damage">Damage: %1$d</string>
+    <string name="toolbar_attack">Attack!</string>
+    <string name="skillTitle">%1$s Check</string>
+    <string name="saveTitle">%1$s Save</string>
+    <string name="ACTitle">AC Bonus</string>
+    <string name="saveFile">char.json</string>
+
 </resources>
