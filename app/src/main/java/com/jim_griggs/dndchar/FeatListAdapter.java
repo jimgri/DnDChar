@@ -7,16 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.jim_griggs.dndchar.dummy.DummyContent.DummyItem;
 import com.jim_griggs.model.*;
-import com.jim_griggs.model.Character;
-
-import android.view.View.OnClickListener;
-
 import java.util.Collection;
 import java.util.List;
 

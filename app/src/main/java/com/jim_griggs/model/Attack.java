@@ -19,6 +19,8 @@ public class Attack {
     public int attackResult;
     public int damageResult;
 
+    private Character mCharacter;
+
     public Attack(String name, int damageDieNum, int damageDieType){
         this.name = name;
         this.damageDieNum = damageDieNum;
@@ -29,6 +31,7 @@ public class Attack {
 
     public Attack(Character character, JSONObject json){
         try {
+            this.mCharacter = character;
             this.name = json.getString("name");
             this.damageDieNum = json.getInt("damageDieNumber");
             this.damageDieType = json.getInt("damageDieType");
@@ -42,12 +45,12 @@ public class Attack {
             if (prof) {
                 attackBonusCount += 1;
                 attackBonuses = new ArrayList<>(attackBonusCount);
-                attackBonuses.add(new Bonus(Bonus.BONUS_PROFICENCY, character.getProfBonus().value));
+                attackBonuses.add(new Bonus(Bonus.BONUS_PROFICENCY, mCharacter.getProfBonus().value));
             } else {
                 attackBonuses = new ArrayList<>(attackBonusCount);
             }
 
-            Bonus statBonus = new Bonus(Bonus.BONUS_STAT, character.stats.get(stat).getStatBonus().value);
+            Bonus statBonus = new Bonus(Bonus.BONUS_STAT, mCharacter.stats.get(stat).getStatBonus().value);
             attackBonuses.add(statBonus);
             for (int i = 0; i < aBonuses.length(); i++) {
                 attackBonuses.add(new Bonus((JSONObject) aBonuses.get(i)));
@@ -91,17 +94,62 @@ public class Attack {
         return total;
     }
 
+    private void removeCritBonus(){
+        for(Bonus b: this.damageBonuses){
+            if (b.type == Bonus.BONUS_CRIT){
+                damageBonuses.remove(b);
+            }
+        }
+    }
+
+    private void removeRageBonus(){
+        for(Bonus b: this.damageBonuses){
+            if (b.type == Bonus.BONUS_RAGE){
+                damageBonuses.remove(b);
+            }
+        }
+    }
+
+    private void addRageBonus(){
+        boolean found = false;
+        for(Bonus b: this.damageBonuses){
+            if (b.type == Bonus.BONUS_RAGE){
+                found = true;
+                b.value = mCharacter.rageBonus.value;
+            }
+        }
+        if (!found){
+            damageBonuses.add(mCharacter.rageBonus);
+        }
+    }
+
     public void calcResults(int attackRoll, int damageRoll){
         this.attackRoll = attackRoll;
         this.damageRoll = damageRoll;
+
+        // The last attack may have included a Crit Bonus.
+        // That has to be removed as it doesn't carry over from attack to attack.
+        removeCritBonus();
+        if (attackRoll >= mCharacter.critRange) {
+            Bonus critBonus = new Bonus(Bonus.BONUS_CRIT, damageRoll);
+            addDamageBonus(critBonus);
+            mCharacter.raged = true;
+        }
+
+        // Add rage damage bonus, if applicable.
+        if (mCharacter.raged){
+            addRageBonus();
+        } else {
+            removeRageBonus();
+        }
+
         this.attackResult = attackRoll + getTotalAttackBonus();
         this.damageResult = damageRoll + getTotalDamageBonus();
-        // Todo:  Add crit range to character.
-        // Todo:  if attackroll is crit, {set crit boolean; if fighter, set rage)
-        // Todo:  if raged, add rage damage as new Damage Bonus to attack.
-        // Todo:  Will need to add code to remove the rage bonus after combat.
-        // Todo:  Need to add click event to 1) highlight damage 2) provide running total at the top.  Clicking anywhere else clears the selections.
-        // Todo:  Add menu options for:  view last attack results;
         // Todo:  Create off-thread task to save the Character.  Trigger it when the character model changes.
+        // Todo:  Add interface for healing and damage
+        // Todo:  Add interface for temp HP
+        // Todo:  Add interface for long and short rest.
+        // Todo:  Add menu options for:  view last attack results;
+
     }
 }

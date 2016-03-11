@@ -13,7 +13,8 @@ public class Bonus implements Serializable {
     public static final String BONUS_MISC = "Misc";
     public static final String BONUS_ARMOR = "Armor";
     public static final String BONUS_FEAT = "Feat";
-
+    public static final String BONUS_CRIT = "Crit";
+    public static final String BONUS_RAGE = "Rage";
 
     public String type;
     public int value;

@@ -54,6 +54,10 @@ public class Character {
     private int baseMovement;
     public int maxHP;
     public int currentHP;
+    public int critRange;
+    public boolean raged;
+
+    public Bonus rageBonus;
 
     public Map<String, Stat> stats;
     public Map<String, Skill> skills;
@@ -153,6 +157,9 @@ public class Character {
             maxHP = json.getInt("maxhp");
             currentHP = maxHP;
             baseMovement = json.getInt("baseMovement");
+            critRange = json.getInt("critRange");
+            raged = json.getBoolean("raged");
+            initRageBonus();
 
             movementBonuses = new ArrayList<>();
 
@@ -198,6 +205,19 @@ public class Character {
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void initRageBonus(){
+        // Todo:  make sure this is correct.
+        int value = 1;
+        switch (level){
+            case 1: case 2: case 3:
+                value = 1;
+                break;
+            default:
+                value = 4;
+        }
+        rageBonus = new Bonus(Bonus.BONUS_RAGE, value);
     }
 
     public Collection<Bonus> getACBonuses(){

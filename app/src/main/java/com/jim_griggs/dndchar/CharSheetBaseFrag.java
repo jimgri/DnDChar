@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class CharSheetBaseFrag extends Fragment {
     private TextView charHP;
     private TextView charAC;
     private TextView charInit;
+    private CheckBox charRage;
 
     public CharSheetBaseFrag() {
         // Required empty public constructor
@@ -61,6 +63,13 @@ public class CharSheetBaseFrag extends Fragment {
         charHP = (TextView) rootView.findViewById(R.id.charHP);
         charAC = (TextView) rootView.findViewById(R.id.charAC);
         charInit = (TextView) rootView.findViewById(R.id.charInit);
+        charRage = (CheckBox) rootView.findViewById(R.id.charRage);
+        charRage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                c.raged = false;
+            }
+        });
 
         RelativeLayout acBox = (RelativeLayout) rootView.findViewById(R.id.acBox);
         acBox.setOnClickListener(new ACListener());
@@ -96,7 +105,7 @@ public class CharSheetBaseFrag extends Fragment {
         charHP.setText(String.format("%1$d / %2$d", c.currentHP, c.maxHP));
         charAC.setText(String.format("%d", c.getAC()));
         charInit.setText(toBonusString(c.getInitBonus()));
-
+        charRage.setChecked(c.raged);
     }
 
     private void CreateStatView(LayoutInflater inflater, ViewGroup parent, Stat stat){

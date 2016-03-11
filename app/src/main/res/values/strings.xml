@@ -11,6 +11,7 @@
     <string name="toolbar_attack">Attack!</string>
     <string name="skillTitle">%1$s Check</string>
     <string name="saveTitle">%1$s Save</string>
+    <string name="runningDamage">Total Damage: %1$d</string>
     <string name="ACTitle">AC Bonus</string>
     <string name="saveFile">char.json</string>
 

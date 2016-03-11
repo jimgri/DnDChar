@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!-- Attack Name -->
+        <TextView
+            android:id="@+id/attackLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:text="Sample"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Attack Section -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <!-- Attack Roll -->
+                <TextView
+                    android:id="@+id/attackRoll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/black_border"
+                    android:gravity="center_horizontal"
+                    android:text="Sample" />
+                <!-- Attack Bonuses -->
+                <LinearLayout
+                    android:id="@+id/attackBonuses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+                <!-- Attack Result -->
+                <TextView
+                    android:id="@+id/attackResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/black_border"
+                    android:textStyle="bold"
+                    android:textSize="12pt"
+                    android:text="Sample" />
+
+            </LinearLayout>
+            <!-- Damage Section -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <!-- Damage Roll -->
+                <TextView
+                    android:id="@+id/damageRoll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/black_border"
+                    android:gravity="center_horizontal"
+                    android:text="Sample" />
+                <!-- Damage Bonuses -->
+                <LinearLayout
+                    android:id="@+id/damageBonuses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+                <!-- Damage Results -->
+                <TextView
+                    android:id="@+id/damageResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/black_border"
+                    android:textStyle="bold"
+                    android:textSize="12pt"
+                    android:text="Sample" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>
