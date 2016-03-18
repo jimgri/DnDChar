@@ -13,27 +13,26 @@ import com.jim_griggs.model.Character;
 public class AttackResultsActivity extends AppCompatActivity {
     private int mRunningDamage = 0;
     private TextView mRunningDamageView;
-    private ListView mAttackResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attack_results);
 
-        Character c = Character.getInstance();
+        Character character = Character.getInstance();
 
         mRunningDamageView = (TextView) findViewById(R.id.runningDamage);
-        mAttackResults = (ListView) findViewById(R.id.attackResultsList);
+        ListView AttackResults = (ListView) findViewById(R.id.attackResultsList);
 
         int damageTotal = 0;
-        for (Attack a: c.attacks) {
-            damageTotal += a.damageResult;
+        for (Attack a: character.getAttacks()) {
+            damageTotal += a.getDamageResult();
         }
         mRunningDamageView.setText(String.format(getString(R.string.runningDamage), damageTotal));
 
-        AttackResultsAdapter adapter = new AttackResultsAdapter(this, R.id.attackResultsList, c.attacks);
-        mAttackResults.setAdapter(adapter);
-        mAttackResults.setOnItemClickListener(new DamageClick());
+        AttackResultsAdapter adapter = new AttackResultsAdapter(this, R.id.attackResultsList, character.getAttacks());
+        AttackResults.setAdapter(adapter);
+        AttackResults.setOnItemClickListener(new DamageClick());
     }
 
     private class DamageClick implements AdapterView.OnItemClickListener{

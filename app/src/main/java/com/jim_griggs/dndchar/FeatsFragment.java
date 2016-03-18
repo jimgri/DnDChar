@@ -3,7 +3,6 @@ package com.jim_griggs.dndchar;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,7 @@ public class FeatsFragment extends Fragment {
     }
 
     public static FeatsFragment newInstance() {
-        FeatsFragment fragment = new FeatsFragment();
-        return fragment;
+        return new FeatsFragment();
     }
 
     @Override
@@ -29,9 +27,10 @@ public class FeatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         ListView view = (ListView) inflater.inflate(R.layout.fragment_feats, container, false);
 
-        Log.i("Feat size", Integer.toString(Character.getInstance().feats.size()));
+        Character character = Character.getInstance();
+
         // Set the adapter
-        view.setAdapter(new FeatListAdapter(getActivity(), R.id.featList, Character.getInstance().feats));
+        view.setAdapter(new FeatListAdapter(getActivity(), R.id.featList, character.getFeats()));
 
         return view;
     }

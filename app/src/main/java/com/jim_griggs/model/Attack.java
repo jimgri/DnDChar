@@ -1,87 +1,69 @@
 package com.jim_griggs.model;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class Attack {
-    public String name;
-    public int attackDieType = 20;
-    public ArrayList<Bonus> attackBonuses;
-    public ArrayList<Bonus> damageBonuses;
-    public int damageDieNum;
-    public int damageDieType;
-
-    public int attackRoll;
-    public int damageRoll;
-    public int attackResult;
-    public int damageResult;
+    private String name;
+    private String statType;
+    private boolean proficient;
+    private Dice attackDice = new Dice(1, 20);
+    private Dice damageDice;
+    private ArrayList<Bonus> attackBonuses;
+    private ArrayList<Bonus> damageBonuses;
+    private Bonus mCritBonus;
+    private Bonus mRageBonus;
+    private int attackRoll;
+    private int damageRoll;
+    private int attackResult;
+    private int damageResult;
 
     private Character mCharacter;
 
-    public Attack(String name, int damageDieNum, int damageDieType){
+    public Attack(Character character, String name, String statType, boolean proficient){
+        this.mCharacter = character;
         this.name = name;
-        this.damageDieNum = damageDieNum;
-        this.damageDieType = damageDieType;
+        this.statType = statType;
+        this.proficient = proficient;
         this.attackBonuses = new ArrayList<>();
         this.damageBonuses = new ArrayList<>();
     }
 
-    public Attack(Character character, JSONObject json){
-        try {
-            this.mCharacter = character;
-            this.name = json.getString("name");
-            this.damageDieNum = json.getInt("damageDieNumber");
-            this.damageDieType = json.getInt("damageDieType");
+    public void setName(String name) { this.name = name; }
+    public String getName() { return this.name; }
 
-            int attackBonusCount = 1;
-            String stat = json.getString("stat");
-            Boolean prof = json.getBoolean("proficient");
-            JSONArray aBonuses = json.getJSONArray("attackBonuses");
-            attackBonusCount += aBonuses.length();
+    public String getStatType() {return statType;}
+    public void setStatType(String statType) {this.statType = statType;}
 
-            if (prof) {
-                attackBonusCount += 1;
-                attackBonuses = new ArrayList<>(attackBonusCount);
-                attackBonuses.add(new Bonus(Bonus.BONUS_PROFICENCY, mCharacter.getProfBonus().value));
-            } else {
-                attackBonuses = new ArrayList<>(attackBonusCount);
-            }
+    public boolean isProficient() {return proficient;}
+    public void setProficient(boolean proficient) {this.proficient = proficient;}
 
-            Bonus statBonus = new Bonus(Bonus.BONUS_STAT, mCharacter.stats.get(stat).getStatBonus().value);
-            attackBonuses.add(statBonus);
-            for (int i = 0; i < aBonuses.length(); i++) {
-                attackBonuses.add(new Bonus((JSONObject) aBonuses.get(i)));
-            }
+    public void setDamageDice(Dice damageDice) {this.damageDice = damageDice;}
+    public Dice getDamageDice() { return this.damageDice; }
 
-            int damageBonusCount = 1;
-            JSONArray dBonuses = json.getJSONArray("damageBonuses");
-            damageBonusCount += dBonuses.length();
-            damageBonuses = new ArrayList<>(damageBonusCount);
-            damageBonuses.add(statBonus);
-            for (int i = 0; i < dBonuses.length(); i++) {
-                damageBonuses.add(new Bonus((JSONObject) dBonuses.get(i)));
-            }
+    public Dice getAttackDice() { return this.attackDice; }
 
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
-    }
+    public void addAttackBonus(Bonus newBonus){this.attackBonuses.add(newBonus);}
+    public ArrayList<Bonus> getAttackBonuses() { return this.attackBonuses; }
 
-    public void addAttackBonus(Bonus newBonus){
-        this.attackBonuses.add(newBonus);
-    }
+    public void addDamageBonus(Bonus newBonus){this.damageBonuses.add(newBonus);}
+    public ArrayList<Bonus> getDamageBonuses() { return this.damageBonuses; }
 
-    public void addDamageBonus(Bonus newBonus){
-        this.damageBonuses.add(newBonus);
-    }
+    public int getAttackRoll() {return attackRoll;}
+    public void setAttackRoll(int attackRoll) {this.attackRoll = attackRoll;}
+
+    public int getDamageRoll() {return damageRoll;}
+    public void setDamageRoll(int damageRoll) {this.damageRoll = damageRoll;}
+
+    public int getAttackResult() {return attackResult;}
+    public void setAttackResult(int attackResult) {this.attackResult = attackResult;}
+
+    public int getDamageResult() {return damageResult;}
+    public void setDamageResult(int damageResult) {this.damageResult = damageResult;}
 
     public int getTotalAttackBonus(){
         int total = 0;
         for(Bonus b: attackBonuses){
-            total += b.value;
+            total += b.getValue();
         }
         return total;
     }
@@ -89,67 +71,68 @@ public class Attack {
     public int getTotalDamageBonus(){
         int total = 0;
         for(Bonus b: damageBonuses){
-            total += b.value;
+            total += b.getValue();
         }
         return total;
     }
 
+    private boolean isCrit(){
+        return (attackRoll >= mCharacter.getCritRange());
+    }
+
+    private void addCritBonus() {
+        if (isCrit()) {
+            mCritBonus = new Bonus(Bonus.BONUS_CRIT, damageRoll);
+            addDamageBonus(mCritBonus);
+            mCharacter.setRaged(true);
+        }
+    }
+
     private void removeCritBonus(){
-        for(Bonus b: this.damageBonuses){
-            if (b.type == Bonus.BONUS_CRIT){
-                damageBonuses.remove(b);
-            }
+        if (mCritBonus != null){
+            damageBonuses.remove(mCritBonus);
+            mCritBonus = null;
         }
     }
 
     private void removeRageBonus(){
-        for(Bonus b: this.damageBonuses){
-            if (b.type == Bonus.BONUS_RAGE){
-                damageBonuses.remove(b);
-            }
+        if (mRageBonus != null){
+            damageBonuses.remove(mRageBonus);
+            mRageBonus = null;
         }
     }
 
     private void addRageBonus(){
-        boolean found = false;
-        for(Bonus b: this.damageBonuses){
-            if (b.type == Bonus.BONUS_RAGE){
-                found = true;
-                b.value = mCharacter.rageBonus.value;
-            }
-        }
-        if (!found){
-            damageBonuses.add(mCharacter.rageBonus);
-        }
+        mRageBonus = mCharacter.getRageBonus();
+        addDamageBonus(mRageBonus);
     }
 
     public void calcResults(int attackRoll, int damageRoll){
         this.attackRoll = attackRoll;
         this.damageRoll = damageRoll;
 
-        // The last attack may have included a Crit Bonus.
-        // That has to be removed as it doesn't carry over from attack to attack.
-        removeCritBonus();
-        if (attackRoll >= mCharacter.critRange) {
-            Bonus critBonus = new Bonus(Bonus.BONUS_CRIT, damageRoll);
-            addDamageBonus(critBonus);
-            mCharacter.raged = true;
+        // Add crit damage bonus, if applicable.
+        if (isCrit() && mCritBonus==null){
+            addCritBonus();
+        } else if (!isCrit() && mCritBonus!=null) {
+            removeCritBonus();
         }
 
         // Add rage damage bonus, if applicable.
-        if (mCharacter.raged){
+        if (mCharacter.isRaged() && mRageBonus==null){
             addRageBonus();
-        } else {
+        } else if (!mCharacter.isRaged() && mRageBonus!=null) {
             removeRageBonus();
         }
 
         this.attackResult = attackRoll + getTotalAttackBonus();
         this.damageResult = damageRoll + getTotalDamageBonus();
-        // Todo:  Create off-thread task to save the Character.  Trigger it when the character model changes.
-        // Todo:  Add interface for healing and damage
-        // Todo:  Add interface for temp HP
+        // Todo:  Improve UI
+        // Todo:  Code review
+        // Todo:  Add interface for hitDice.
         // Todo:  Add interface for long and short rest.
         // Todo:  Add menu options for:  view last attack results;
+        // Todo:  Add interface for temp HP
 
     }
 }

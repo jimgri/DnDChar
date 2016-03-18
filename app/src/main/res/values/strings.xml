@@ -12,7 +12,11 @@
     <string name="skillTitle">%1$s Check</string>
     <string name="saveTitle">%1$s Save</string>
     <string name="runningDamage">Total Damage: %1$d</string>
-    <string name="ACTitle">AC Bonus</string>
+    <string name="ACTitle">AC Bonuses</string>
+    <string name="moveTitle">Movement Bonuses</string>
+    <string name="char_summary_tag">char_summary_tag</string>
+    <string name="char_skills_tag">char_summary_tag</string>
+    <string name="char_feat_tag">char_summary_tag</string>
     <string name="saveFile">char.json</string>
 
 </resources>

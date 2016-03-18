@@ -9,4 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     tools:context="com.jim_griggs.dndchar.FeatsFragment"
-    tools:listitem="@layout/feat_template" />
+    tools:listitem="@layout/feat_template"
+    android:tag="@string/char_feat_tag" />

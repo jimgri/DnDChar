@@ -1,6 +1,5 @@
 package com.jim_griggs.dndchar;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,14 +19,12 @@ import com.jim_griggs.model.Skill;
 
 public class SkillsFrag extends Fragment {
 
-
     public SkillsFrag() {
         // Required empty public constructor
     }
 
     public static SkillsFrag newInstance() {
-        SkillsFrag fragment = new SkillsFrag();
-        return fragment;
+        return new SkillsFrag();
     }
 
     @Override
@@ -40,14 +37,14 @@ public class SkillsFrag extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ListView list = (ListView) view.findViewById(R.id.skillList);
-        ArrayList<Skill> objects = new ArrayList<>(Character.getInstance().skills.values());
+        ArrayList<Skill> objects = new ArrayList<>(Character.getInstance().getSkills().values());
         list.setAdapter(new SkillAdapter(getContext(), R.id.skillList, objects));
         list.setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Skill skill = (Skill) parent.getAdapter().getItem(position);
                 CharActivity act = (CharActivity) getActivity();
-                act.launchCheckActivity(String.format(getString(R.string.skillTitle), skill.skill_type), CheckActivity.TYPE_CHECK, skill.getSkillBonuses());
+                act.launchCheckActivity(String.format(getString(R.string.skillTitle), skill.getSkillType()), CheckActivity.TYPE_CHECK, skill.getSkillBonuses());
             }
         });
     }
@@ -75,8 +72,8 @@ public class SkillsFrag extends Fragment {
             TextView bonus = (TextView) skillLayout.findViewById(R.id.skillBonus);
             TextView name = (TextView) skillLayout.findViewById(R.id.skillName);
             bonus.setText(Integer.toString(skill.getSkillBonus()));
-            name.setText(skill.skill_type + " (" + skill.stat_type + ")");
-            if(skill.proficient){
+            name.setText(skill.getSkillType() + " (" + skill.getStatType() + ")");
+            if(skill.isProficient()){
                 name.setTextColor(ContextCompat.getColor(getContext(), R.color.blue));
             }
             return skillLayout;

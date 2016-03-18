@@ -1,22 +1,18 @@
 package com.jim_griggs.dndchar;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.jim_griggs.model.*;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeatListAdapter extends ArrayAdapter<Feat> {
     private final Context mContext;
 
-    public FeatListAdapter(Context context, int resource, Collection<Feat> objects) {
+    public FeatListAdapter(Context context, int resource, ArrayList<Feat> objects) {
         super(context, resource, (List) objects);
-        Log.i("NUMBER OF FEATS", Integer.toString(objects.size()));
         mContext = context;
     }
 
@@ -25,13 +21,11 @@ public class FeatListAdapter extends ArrayAdapter<Feat> {
     public View getView(int position, View convertView, ViewGroup parent) {
         FeatListItem layout;
 
-        Log.i("GETVIEW CALLED", "");
-
         if (convertView == null) {
             layout = new FeatListItem(mContext);
         } else {
             layout = (FeatListItem) convertView;
-        };
+        }
         layout.setFeat(getItem(position));
         return layout;
     }

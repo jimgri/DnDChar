@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jim_griggs.model.Bonus;
+import com.jim_griggs.model.Dice;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -15,7 +17,6 @@ public class CheckActivity extends AppCompatActivity implements RollFragment.Rol
     public static final String CHECK_TITLE = "Check_Title";
     public static final String CHECK_BONUSES = "Check_Bonuses";
     public static final String CHECK_TYPE = "Check_Type";
-
     public static final String TYPE_BONUS = "Bonus";
     public static final String TYPE_CHECK = "Check";
 
@@ -44,11 +45,11 @@ public class CheckActivity extends AppCompatActivity implements RollFragment.Rol
         LinearLayout table = (LinearLayout) findViewById(R.id.checkBonuses);
         for (Bonus b : bonuses) {
             addBonusToTable(table, b);
-            bonusTotal += b.value;
+            bonusTotal += b.getValue();
         }
 
         if (type.equals(TYPE_CHECK)) {
-            RollFragment rollFrag = RollFragment.newInstance("check", 1, 20);
+            RollFragment rollFrag = RollFragment.newInstance("check", new Dice(1, 20));
             // Add the fragment to the Layout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.checkDice, rollFrag).commit();
@@ -59,8 +60,8 @@ public class CheckActivity extends AppCompatActivity implements RollFragment.Rol
         LinearLayout bonusBox = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.bonus_template, table, false);
         TextView bonusLabel = (TextView) bonusBox.findViewById(R.id.bonus_label);
         TextView bonusValue = (TextView) bonusBox.findViewById(R.id.bonus_value);
-        bonusLabel.setText(bonus.type);
-        bonusValue.setText(Utils.toBonusString(bonus.value));
+        bonusLabel.setText(bonus.getType());
+        bonusValue.setText(Utils.toBonusString(bonus.getValue()));
         table.addView(bonusBox);
     }
 
@@ -72,6 +73,4 @@ public class CheckActivity extends AppCompatActivity implements RollFragment.Rol
     public void onCloseButton(View view){
         finish();
     }
-
-
 }

@@ -2,7 +2,6 @@ package com.jim_griggs.dndchar;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,6 @@ import android.widget.TextView;
 
 import com.jim_griggs.model.Feat;
 
-/**
- * Created by tdevjwg on 3/9/2016.
- */
 public class FeatListItem extends LinearLayout {
     Feat mFeat;
     Context mContext;
@@ -54,9 +50,9 @@ public class FeatListItem extends LinearLayout {
     public void setFeat(Feat feat){
         mFeat = feat;
 
-        mNameView.setText(mFeat.name);
+        mNameView.setText(mFeat.getName());
 
-        for (int i=0; i<mFeat.numUsage; i++) {
+        for (int i=0; i<mFeat.getCurrentUsage(); i++) {
             CheckBox c = new CheckBox(mContext);
             c.setOnClickListener(new View.OnClickListener(){
                 @Override

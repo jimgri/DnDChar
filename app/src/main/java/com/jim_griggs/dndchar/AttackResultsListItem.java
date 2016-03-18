@@ -3,16 +3,15 @@ package com.jim_griggs.dndchar;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jim_griggs.model.Attack;
 import com.jim_griggs.model.Bonus;
 
+// TODO: Change this FrameLayout to a LinearLayout
 public class AttackResultsListItem extends FrameLayout {
     private Attack mAttack;
     private Context mContext;
@@ -46,6 +45,11 @@ public class AttackResultsListItem extends FrameLayout {
 
         LayoutInflater.from(mContext).inflate(R.layout.attack_results_list_item, this);
 
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(8, 8, 8, 8);
+        setLayoutParams(lp);
+
         mOverlay = findViewById(R.id.overlay);
         mAttackLabel = (TextView) findViewById(R.id.attackLabel);
         mAttackRoll = (TextView) findViewById(R.id.attackRoll);
@@ -59,31 +63,29 @@ public class AttackResultsListItem extends FrameLayout {
     public void setAttack(Attack attack){
         mAttack = attack;
 
-        Log.i("SETTING ATTACK IN ITEM", "HERE");
-        mAttackLabel.setText(mAttack.name);
-        mAttackRoll.setText(String.format(mContext.getString(R.string.roll), mAttack.attackRoll));
-        mDamageRoll.setText(String.format(mContext.getString(R.string.roll), mAttack.damageRoll));
-        mAttackResult.setText(String.format(mContext.getString(R.string.hit), mAttack.attackResult));
-        mDamageResult.setText(String.format(mContext.getString(R.string.damage), mAttack.damageResult));
+        mAttackLabel.setText(mAttack.getName());
+        mAttackRoll.setText(String.format(mContext.getString(R.string.roll), mAttack.getAttackRoll()));
+        mDamageRoll.setText(String.format(mContext.getString(R.string.roll), mAttack.getDamageRoll()));
+        mAttackResult.setText(String.format(mContext.getString(R.string.hit), mAttack.getAttackResult()));
+        mDamageResult.setText(String.format(mContext.getString(R.string.damage), mAttack.getDamageResult()));
 
         mAttackBonuses.removeAllViews();
-        for (Bonus b: mAttack.attackBonuses){
-            Log.i("Loading Next ABonus",b.type);
+        for (Bonus b: mAttack.getAttackBonuses()){
             LinearLayout bonusView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.bonus_template, mAttackBonuses, false);
             TextView bl = (TextView) bonusView.findViewById(R.id.bonus_label);
             TextView bv = (TextView) bonusView.findViewById(R.id.bonus_value);
-            bl.setText(b.type);
-            bv.setText(String.format("%d", b.value));
+            bl.setText(b.getType());
+            bv.setText(String.format("%d", b.getValue()));
             mAttackBonuses.addView(bonusView);
         }
 
         mDamageBonuses.removeAllViews();
-        for (Bonus b: mAttack.damageBonuses) {
+        for (Bonus b: mAttack.getDamageBonuses()) {
             LinearLayout bonusView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.bonus_template, mDamageBonuses, false);
             TextView bl = (TextView) bonusView.findViewById(R.id.bonus_label);
             TextView bv = (TextView) bonusView.findViewById(R.id.bonus_value);
-            bl.setText(b.type);
-            bv.setText(String.format("%d", b.value));
+            bl.setText(b.getType());
+            bv.setText(String.format("%d", b.getValue()));
             mDamageBonuses.addView(bonusView);
         }
 
@@ -94,9 +96,9 @@ public class AttackResultsListItem extends FrameLayout {
         mChecked = !mChecked;
         drawBorder();
         if (mChecked) {
-            return mAttack.damageResult;
+            return mAttack.getDamageResult();
         } else {
-            return -(mAttack.damageResult);
+            return -(mAttack.getDamageResult());
         }
     }
 

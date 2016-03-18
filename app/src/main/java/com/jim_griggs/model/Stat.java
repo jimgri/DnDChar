@@ -14,38 +14,35 @@ public class Stat {
     public static final String TYPE_INT = "INT";
     public static final String TYPE_CHA = "CHA";
 
-    public String type;
-    public int value;
-    public boolean proficient;
-    private Character mChar;
-
-    public Stat(Character character, String type, int value){
-        this.mChar = character;
-        this.type = type;
-        this.value = value;
-    }
-
-    public Stat(Character character, JSONObject json){
-        this.mChar = character;
-        try {
-            this.type = json.getString("type");
-            this.value = json.getInt("value");
-            this.proficient = json.getBoolean("save");
-        } catch (JSONException ex){
-            ex.printStackTrace();
-        }
-    }
+    private String type;
+    private int value;
+    private boolean proficient;
+    private Bonus statBonus;
+    private Character mCharacter;
 
     public Stat(Character character, String type, int value, boolean proficient){
-        this.mChar = character;
+        this.mCharacter = character;
         this.type = type;
         this.value = value;
         this.proficient = proficient;
     }
 
+    public String getType() {return type;}
+    // TODO:  update setter to check for valid type
+    public void setType(String type) {this.type = type;}
+
+    public int getValue() {return value;}
+    public void setValue(int value) {this.value = value;}
+
+    public boolean isProficient() {return proficient;}
+    public void setProficient(boolean proficient) {this.proficient = proficient;}
+
     public Bonus getStatBonus() {
         //TODO:  Confirm thsi equation to convert Stat to Bonus
-        return new Bonus(Bonus.BONUS_STAT, (this.value/2) - 5);
+        if (statBonus == null) {
+            statBonus = new Bonus(Bonus.BONUS_STAT, (this.value/2) - 5);
+        }
+        return statBonus;
     }
 
     public int calcSavingThrow(int roll){
@@ -53,9 +50,9 @@ public class Stat {
     }
 
     public int getSaveBonus(){
-        int result = getStatBonus().value;
+        int result = getStatBonus().getValue();
         if (proficient){
-            result += mChar.getProfBonus().value;
+            result += mCharacter.getProficiencyBonus().getValue();
         }
         return result;
     }
@@ -64,7 +61,7 @@ public class Stat {
         Collection<Bonus> result = new ArrayList<>();
         result.add(getStatBonus());
         if (proficient){
-            result.add (mChar.getProfBonus());
+            result.add (mCharacter.getProficiencyBonus());
         }
         return result;
     }

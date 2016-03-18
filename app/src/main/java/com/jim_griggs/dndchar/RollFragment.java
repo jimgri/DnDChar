@@ -7,17 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.jim_griggs.model.Dice;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
 
 
 /**
@@ -32,13 +27,10 @@ import java.util.Hashtable;
 public class RollFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ROLLNAME = "rollName";
-    private static final String ARG_DIESIDECOUNT = "dieSideCount";
-    private static final String ARG_NUMBEROFDICE = "numberOfDice";
-    private static final Integer NO_SELECTION = -1;
+    private static final String ARG_DICE = "dice";
 
     private String rollName;
-    private int dieSideCount;
-    private int numberOfDice;
+    private Dice dice;
     private ViewGroup[] mSelected;
     private LinearLayout mRollGrid;
 
@@ -51,33 +43,28 @@ public class RollFragment extends Fragment {
 
     public RollFragment() {
         // Required empty public constructor
+        mSelected = new ViewGroup[0];
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param dieSideCount Parameter 1.
-     * @return A new instance of fragment RollFragment.
-     */
-    public static RollFragment newInstance(String rollName, int numberOfDice, int dieSideCount) {
+    public static RollFragment newInstance(String rollName, Dice dice) {
         RollFragment fragment = new RollFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ROLLNAME, rollName);
-        args.putInt(ARG_DIESIDECOUNT, dieSideCount);
-        args.putInt(ARG_NUMBEROFDICE, numberOfDice);
+        args.putSerializable(ARG_DICE, dice);
         fragment.setArguments(args);
+        Log.i("ROLLFRAGMENT", "NEWINSTANCE COMPLETE");
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("ROLLFRAGMENT", "ONCREATE CALLED!!!");
         if (getArguments() != null) {
             rollName = getArguments().getString(ARG_ROLLNAME);
-            dieSideCount = getArguments().getInt(ARG_DIESIDECOUNT);
-            numberOfDice = getArguments().getInt(ARG_NUMBEROFDICE);
-            mSelected = new ViewGroup[numberOfDice];
+            dice = (Dice) getArguments().getSerializable(ARG_DICE);
+            Log.i("RollFragment","mSelected initialized at onCreate: " + rollName + ":" + Integer.toString(dice.getDieNum()));
+            mSelected = new ViewGroup[dice.getDieNum()];
         }
     }
 
@@ -87,8 +74,7 @@ public class RollFragment extends Fragment {
         // Inflate the roll layout.  This just contains a grid.
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_roll, container, false);
         // For each Die
-        for (int i=0; i<numberOfDice; i++){
-            Log.i("creating Die: ", Integer.toString(i));
+        for (int i=0; i < dice.getDieNum(); i++){
             // Create the Die Faces
             View dieLayout = createDie(inflater, mRollGrid, i);
             // Add to RollGrid
@@ -102,7 +88,7 @@ public class RollFragment extends Fragment {
         GridLayout dieLayout = (GridLayout) inflater.inflate(R.layout.die_template, rollGrid, false);
         dieLayout.setColumnCount(getGridColumnCount());
         DieListener dieListener = new DieListener(dieNum);
-        for (int i=0; i < dieSideCount; i++){
+        for (int i=0; i < dice.getDieType(); i++){
             View dieFace = inflater.inflate(R.layout.layout_dieface, dieLayout, false);
             dieFace.setOnClickListener(dieListener);
             TextView t = (TextView) dieFace.findViewById(R.id.dieFaceText);
@@ -113,7 +99,7 @@ public class RollFragment extends Fragment {
     }
 
     private int getGridColumnCount(){
-        switch (dieSideCount){
+        switch (dice.getDieType()){
             case 8:
                 return 8;
             case 20:
@@ -122,6 +108,52 @@ public class RollFragment extends Fragment {
         return 0;
     }
 
+    public void unselect() {
+        Log.i("RollFragment", "Attempting to unselect die fragment");
+        for (int i =0; i < mSelected.length; i++) {
+            unselectDie(i);
+        }
+    }
+
+    public void unselectDie(int dieNum){
+        if (mSelected[dieNum] != null){
+            Log.i("RollFragment", "Unselecting die" + Integer.toString(dieNum));
+            ImageView image = (ImageView) mSelected[dieNum].findViewById(R.id.dieFaceImage);
+            image.setImageResource(R.drawable.d20);
+            mSelected[dieNum] = null;
+        }
+    }
+
+    public void selectDie(int dieNum, ViewGroup dieView){
+        // Unselect the previous selection first
+        unselectDie(dieNum);
+        // Highlight the new die
+        mSelected[dieNum] = dieView;
+        ImageView image = (ImageView) dieView.findViewById(R.id.dieFaceImage);
+        image.setImageResource(R.drawable.d20h);
+    }
+
+    public boolean allSelected(){
+        boolean selected = true;
+        for (ViewGroup vg: mSelected){
+            if (vg == null){
+                selected = false;
+                break;
+            }
+        }
+        return selected;
+    }
+
+    public int rollTotal(){
+        int total = 0;
+        for (ViewGroup vg: mSelected){
+            if (vg != null){
+                TextView t = (TextView) vg.findViewById(R.id.dieFaceText);
+                total += Integer.valueOf(t.getText().toString());
+            }
+        }
+        return total;
+    }
 
     private class DieListener implements View.OnClickListener {
         private int mDieNum;
@@ -132,30 +164,12 @@ public class RollFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Log.i("die num clicked", Integer.toString(mDieNum));
-            TextView numView = (TextView) v.findViewById(R.id.dieFaceText);
-            int dieFaceValue = Integer.parseInt(numView.getText().toString());
-            if (mSelected[mDieNum] != null){
-                ViewGroup selectedView = mSelected[mDieNum];
-                ImageView image = (ImageView) selectedView.findViewById(R.id.dieFaceImage);
-                image.setImageResource(R.drawable.d20);
-            }
-            mSelected[mDieNum] = (ViewGroup) v;
-            ImageView image = (ImageView) v.findViewById(R.id.dieFaceImage);
-            image.setImageResource(R.drawable.d20h);
+            selectDie(mDieNum, (ViewGroup) v);
+
             if (mListener != null) {
-                boolean allSelected = true;
-                int rollTotal = 0;
-                for (int i=0; i < mSelected.length; i++){
-                    if (mSelected[i] == null){
-                        allSelected = false;
-                        break;
-                    }
-                    TextView t = (TextView) mSelected[i].findViewById(R.id.dieFaceText);
-                    rollTotal += Integer.valueOf(t.getText().toString());
-                }
-                if (allSelected) {
-                    mListener.onDiceRolled(rollName, rollTotal);
+                if (allSelected()) {
+                    int total = rollTotal();
+                    mListener.onDiceRolled(rollName, total);
                 }
             }
         }

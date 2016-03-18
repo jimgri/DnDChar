@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Character {
@@ -43,242 +44,225 @@ public class Character {
 
     private static Character mInstance = null;
 
-    public String charClass;
-    public int level;
-
-    public String name;
-    public String playerName;
-    public String race;
-    public String alignment;
-    public int XP;
-    private int baseMovement;
-    public int maxHP;
-    public int currentHP;
-    public int critRange;
-    public boolean raged;
-
-    public Bonus rageBonus;
-
-    public Map<String, Stat> stats;
-    public Map<String, Skill> skills;
-
-    public ArrayList<Attack> attacks;
-    public Collection<Bonus> ACBonuses;
-    public Collection<Bonus> movementBonuses;
-    public ArrayList<Feat> feats;
+    private String charClass;
+    private int level;
+    private String name;
+    private String playerName;
+    private String race;
+    private String alignment;
+    private int XP;
+    private int maxHP;
+    private int currentHP;
+    private int critRange;
+    private boolean raged;
+    private Bonus rageBonus;
+    private Bonus proficiencyBonus;
+    private boolean inspired;
+    private Map<String, Stat> stats;
+    private Map<String, Skill> skills;
+    private ArrayList<Bonus> ACBonuses;
+    private ArrayList<Bonus> movementBonuses;
+    private ArrayList<Feat> feats;
+    private ArrayList<Attack> attacks;
 
     public static Character getInstance() {
         if(mInstance == null) {
             mInstance = new Character();
+            mInstance.stats = new LinkedHashMap<String, Stat>();
+            mInstance.skills = new LinkedHashMap<String, Skill>();
+            mInstance.ACBonuses = new ArrayList<Bonus>();
+            mInstance.movementBonuses = new ArrayList<Bonus>();
+            mInstance.feats = new ArrayList<Feat>();
+            mInstance.attacks = new ArrayList<Attack>();
         }
         return mInstance;
     }
 
-    public Character() {
-        // Exists only to defeat instantiation.
-        level = 10;
-        name = "Balta";
-        charClass = "Fighter";
-        race = "Dwarf";
-        baseMovement = 25;
-        alignment = ALIGNMENT_NEUTRAL_GOOD;
-        maxHP = 187;
-        currentHP = maxHP;
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
 
-        ACBonuses = new ArrayList<>(3);
-        ACBonuses.add(new Bonus(Bonus.BONUS_ARMOR, 6));
-        ACBonuses.add(new Bonus(Bonus.BONUS_STAT, 3));
-        ACBonuses.add(new Bonus(Bonus.BONUS_FEAT, 2));
+    public String getCharClass() {return charClass;}
+    // TODO:  Make sure setting class to valid type.
+    public void setCharClass(String charClass) {this.charClass = charClass;}
 
-        movementBonuses = new ArrayList<>();
+    public String getRace() {return race;}
+    // TODO:  Make sure setting race to valid type.
+    public void setRace(String race) {this.race = race;}
 
-        stats = new HashMap<>();
-        Stat str = new Stat(this, Stat.TYPE_STR, 18, true);
-        stats.put(Stat.TYPE_STR, str);
+    public int getLevel() {return level;}
+    public void setLevel(int level) {this.level = level;}
 
-        Stat dex = new Stat(this, Stat.TYPE_DEX, 14);
-        stats.put(Stat.TYPE_DEX, dex);
+    public String getPlayerName() {return playerName;}
+    public void setPlayerName(String playerName) {this.playerName = playerName;}
 
-        Stat con = new Stat(this, Stat.TYPE_CON, 16, true);
-        stats.put(Stat.TYPE_CON, con);
+    public String getAlignment() {return alignment;}
+    // TODO:  Make sure setting to valid type.
+    public void setAlignment(String alignment) {this.alignment = alignment;}
 
-        Stat wis = new Stat(this, Stat.TYPE_WIS, 12);
-        stats.put(Stat.TYPE_WIS, wis);
+    public int getXP() {return XP;}
+    public void setXP(int XP) {this.XP = XP;}
 
-        Stat intel = new Stat(this, Stat.TYPE_INT, 10);
-        stats.put(Stat.TYPE_INT, intel);
+    public int getMaxHP() {return maxHP;}
+    public void setMaxHP(int maxHP) {this.maxHP = maxHP;}
 
-        Stat cha = new Stat(this, Stat.TYPE_CHA, 8);
-        stats.put(cha.type, cha);
+    public int getCurrentHP() {return currentHP;}
+    public void setCurrentHP(int currentHP) {this.currentHP = currentHP;}
 
-        skills = new HashMap<>();
-        InitSkills();
-        skills.get(Skill.SKILL_ATHLETICS).proficient = true;
-        skills.get(Skill.SKILL_HISTORY).proficient = true;
-        skills.get(Skill.SKILL_PERCEPTION).proficient = true;
-        skills.get(Skill.SKILL_PERSUASION).proficient = true;
+    public int getCritRange() {return critRange;}
+    public void setCritRange(int critRange) {this.critRange = critRange;}
 
-        attacks = new ArrayList<>();
-        Attack a1 = new Attack("primary1", 2, 8);
-        a1.addAttackBonus(getProfBonus());
-        a1.addAttackBonus(str.getStatBonus());
-        a1.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 3));
-        a1.addDamageBonus(str.getStatBonus());
-        a1.addDamageBonus(new Bonus(Bonus.BONUS_WEAPON, 3));
-        attacks.add(a1);
+    public boolean isRaged() {return raged;}
+    public void setRaged(boolean raged) {this.raged = raged;}
 
-        Attack a2 = new Attack("primary2", 1, 8);
-        a2.addAttackBonus(getProfBonus());
-        a2.addAttackBonus(str.getStatBonus());
-        a2.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 3));
-        attacks.add(a2);
+    public boolean isInspired() {return inspired;}
+    public void setInspired(boolean insired) {this.inspired = insired;}
 
-        Attack a3 = new Attack("primary3", 1, 8);
-        a3.addAttackBonus(getProfBonus());
-        a3.addAttackBonus(str.getStatBonus());
-        a3.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 3));
-        attacks.add(a3);
 
-        Attack a4 = new Attack("offhand", 1, 8);
-        a4.addAttackBonus(getProfBonus());
-        a4.addAttackBonus(str.getStatBonus());
-        a4.addAttackBonus(new Bonus(Bonus.BONUS_WEAPON, 1));
-        attacks.add(a4);
-        mInstance = this;
+    public Map<String, Stat> getStats(){
+        return stats;
     }
 
-    public Character(JSONObject json){
-        try {
-            name = json.getString("name");
-            playerName = json.getString("playername");
-            race = json.getString("race");
-            alignment = json.getString("alignment");
-            XP = json.getInt("XP");
-            maxHP = json.getInt("maxhp");
-            currentHP = maxHP;
-            baseMovement = json.getInt("baseMovement");
-            critRange = json.getInt("critRange");
-            raged = json.getBoolean("raged");
-            initRageBonus();
-
-            movementBonuses = new ArrayList<>();
-
-            JSONObject charObject = json.getJSONObject("class");
-            level = charObject.getInt("level");
-            charClass = charObject.getString("class");
-            Log.i("fileData", charClass);
-
-            JSONArray acBonuses = json.getJSONArray("AC");
-            ACBonuses = new ArrayList<>(acBonuses.length());
-            for (int i=0; i<acBonuses.length(); i++) {
-                ACBonuses.add(new Bonus((JSONObject) acBonuses.get(i)));
-            }
-
-            JSONArray charStats = json.getJSONArray("stats");
-            stats = new HashMap<>();
-            for (int i=0; i<charStats.length(); i++){
-                Stat s = new Stat(this, (JSONObject) charStats.get(i));
-                stats.put(s.type, s);
-            }
-
-            JSONArray charSkills = json.getJSONArray("skillProficiencies");
-            skills = new HashMap<>(charSkills.length());
-            for (int i=0; i<charSkills.length(); i++) {
-                Skill s = new Skill(this, (JSONObject) charSkills.get(i));
-                skills.put(s.skill_type, s);
-            }
-
-            JSONArray charAttacks = json.getJSONArray("attacks");
-            attacks = new ArrayList<>(charAttacks.length());
-            for (int i=0; i<charAttacks.length(); i++){
-                attacks.add(new Attack(this, (JSONObject) charAttacks.get(i)));
-            }
-
-            Log.i ("init Feats", "");
-            JSONArray jsonFeats = json.getJSONArray("feats");
-            feats = new ArrayList<>(jsonFeats.length());
-            for (int i = 0; i < jsonFeats.length(); i++) {
-                feats.add(new Feat((JSONObject) jsonFeats.get(i)));
-            }
-
-            mInstance = this;
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
+    public Stat getStat(String statType){
+        return stats.get(statType);
     }
 
-    private void initRageBonus(){
-        // Todo:  make sure this is correct.
-        int value = 1;
-        switch (level){
-            case 1: case 2: case 3:
-                value = 1;
-                break;
-            default:
-                value = 4;
-        }
-        rageBonus = new Bonus(Bonus.BONUS_RAGE, value);
+    public void addStat(Stat stat){
+        stats.put(stat.getType(), stat);
     }
 
-    public Collection<Bonus> getACBonuses(){
+    public Map<String, Skill> getSkills(){
+        return skills;
+    }
+
+    public Skill getSkill(String skillType){
+        return skills.get(skillType);
+    }
+
+    public void addSkill(Skill skill) {
+        skills.put(skill.getSkillType(), skill);
+    }
+
+    public ArrayList<Bonus> getACBonuses(){
         return ACBonuses;
+    }
+
+    public void addACBonus(Bonus bonus){
+        ACBonuses.add(bonus);
     }
 
     public int getAC(){
         int result = 0;
         for (Bonus b : ACBonuses){
-            result += b.value;
+            result += b.getValue();
         }
         return result;
     }
 
-    public Bonus getProfBonus(){
-        int result = 0;
-        switch(level){
-            case 1: case 2: case 3: case 4:
-                result = 2;
-                break;
-            case 5: case 6: case 7:case 8:
-                result = 3;
-                break;
-            case 9: case 10: case 11: case 12:
-                result = 4;
-                break;
-            case 13: case 14: case 15: case 16:
-                result = 5;
-                break;
-            case 17: case 18: case 19: case 20:
-                result = 6;
-                break;
-         }
-        return new Bonus(Bonus.BONUS_PROFICENCY, result);
+    public ArrayList<Bonus> getMovementBonuses(){
+        return movementBonuses;
     }
 
-    public Bonus getStatBonus(String stat_type){
-        return stats.get(stat_type).getStatBonus();
-    }
-
-    public int calcInitiative(int roll) {
-        return roll + stats.get(Stat.TYPE_DEX).getStatBonus().value;
-    }
-
-    public int getInitBonus(){
-        return stats.get(Stat.TYPE_DEX).getStatBonus().value;
-    }
-
-    public Collection<Bonus> getInitBonuses(){
-        Collection<Bonus> result = new ArrayList<>();
-        result.add(stats.get(Stat.TYPE_DEX).getStatBonus());
-        return result;
+    public void addMovementBonus(Bonus bonus){
+        movementBonuses.add(bonus);
     }
 
     public int getMovement() {
-        int moveBonuses = 0;
-        for (Bonus moveBonus : movementBonuses){
-            moveBonuses += moveBonus.value;
+        int move = 0;
+        for (Bonus b : movementBonuses){
+            move += b.getValue();
         }
-        return baseMovement + moveBonuses;
+        return move;
     }
+
+    public ArrayList<Feat> getFeats(){
+        return feats;
+    }
+
+    public void addFeat(Feat feat){
+        feats.add(feat);
+    }
+
+    public ArrayList<Attack> getAttacks(){
+        return attacks;
+    }
+
+    public void addAttack(Attack attack){
+        attacks.add(attack);
+    }
+
+    public Bonus getRageBonus(){
+        if (rageBonus == null) {
+            // Todo:  make sure this is correct.
+            int value = 1;
+            switch (level) {
+                case 1:
+                case 2:
+                case 3:
+                    value = 1;
+                    break;
+                default:
+                    value = 4;
+            }
+            rageBonus = new Bonus(Bonus.BONUS_RAGE, value);
+        }
+        return rageBonus;
+    }
+
+    public Bonus getProficiencyBonus(){
+        if (proficiencyBonus == null) {
+            int result;
+            switch (level) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    result = 2;
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    result = 3;
+                    break;
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                    result = 4;
+                    break;
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                    result = 5;
+                    break;
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                    result = 6;
+                    break;
+                default:
+                    result = 0;
+            }
+            proficiencyBonus = new Bonus(Bonus.BONUS_PROFICENCY, result);
+        }
+        return proficiencyBonus;
+    }
+
+    public Bonus getInitiativeBonus(){
+        return stats.get(Stat.TYPE_DEX).getStatBonus();
+    }
+
+    public int calcInitiative(int roll) {
+        return roll + getInitiative();
+    }
+
+    public int getInitiative(){
+        return stats.get(Stat.TYPE_DEX).getStatBonus().getValue();
+    }
+
+
 
     public int takeDamage(int damage){
         currentHP -= damage;
@@ -290,7 +274,7 @@ public class Character {
 
     public int heal (int heal){
         currentHP += heal;
-        if (currentHP < maxHP){
+        if (currentHP > maxHP){
             currentHP = maxHP;
         }
         return currentHP;
@@ -299,27 +283,6 @@ public class Character {
     public int healFull () {
         currentHP = maxHP;
         return currentHP;
-    }
-
-    public void InitSkills(){
-        skills.put(Skill.SKILL_ACROBATICS, new Skill(this, Skill.SKILL_ACROBATICS, Stat.TYPE_DEX));
-        skills.put(Skill.SKILL_ANIMALHANDLING, new Skill(this, Skill.SKILL_ANIMALHANDLING, Stat.TYPE_WIS));
-        skills.put(Skill.SKILL_ARCANA, new Skill(this, Skill.SKILL_ARCANA, Stat.TYPE_INT));
-        skills.put(Skill.SKILL_ATHLETICS, new Skill(this, Skill.SKILL_ATHLETICS, Stat.TYPE_STR));
-        skills.put(Skill.SKILL_DECEPTION, new Skill(this, Skill.SKILL_DECEPTION, Stat.TYPE_CHA));
-        skills.put(Skill.SKILL_HISTORY, new Skill(this, Skill.SKILL_HISTORY, Stat.TYPE_INT));
-        skills.put(Skill.SKILL_INSIGHT, new Skill(this, Skill.SKILL_INSIGHT, Stat.TYPE_WIS));
-        skills.put(Skill.SKILL_INTIMIDATION, new Skill(this, Skill.SKILL_INTIMIDATION, Stat.TYPE_CHA));
-        skills.put(Skill.SKILL_INVESTIGATION, new Skill(this, Skill.SKILL_INVESTIGATION, Stat.TYPE_INT));
-        skills.put(Skill.SKILL_MEDICINE, new Skill(this, Skill.SKILL_MEDICINE, Stat.TYPE_WIS));
-        skills.put(Skill.SKILL_NATURE, new Skill(this, Skill.SKILL_NATURE, Stat.TYPE_INT));
-        skills.put(Skill.SKILL_PERCEPTION, new Skill(this, Skill.SKILL_PERCEPTION, Stat.TYPE_WIS));
-        skills.put(Skill.SKILL_PERFORMANCE, new Skill(this, Skill.SKILL_PERFORMANCE, Stat.TYPE_CHA));
-        skills.put(Skill.SKILL_PERSUASION, new Skill(this, Skill.SKILL_PERSUASION, Stat.TYPE_CHA));
-        skills.put(Skill.SKILL_RELIGION, new Skill(this, Skill.SKILL_RELIGION, Stat.TYPE_INT));
-        skills.put(Skill.SKILL_SLIGHTOFHAND, new Skill(this, Skill.SKILL_SLIGHTOFHAND, Stat.TYPE_DEX));
-        skills.put(Skill.SKILL_STEALTH, new Skill(this, Skill.SKILL_STEALTH, Stat.TYPE_DEX));
-        skills.put(Skill.SKILL_SURVIVAL, new Skill(this, Skill.SKILL_SURVIVAL, Stat.TYPE_WIS));
     }
 }
 

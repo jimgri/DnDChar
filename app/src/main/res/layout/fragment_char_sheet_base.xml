@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.jim_griggs.dndchar.CharSheetBaseFrag">
+    tools:context="com.jim_griggs.dndchar.CharSheetBaseFrag"
+    android:tag="@string/char_summary_tag">
 
     <LinearLayout
         android:id="@+id/statLayout"
@@ -159,13 +160,11 @@
                     android:textSize="10dp"
                     android:text="Inspiration"
                     android:layout_alignParentTop="true"/>
-                <TextView
+                <CheckBox
                     android:id="@+id/charInspiration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="24sp"
-                    android:text="+5" />
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </LinearLayout>
         <LinearLayout
@@ -197,6 +196,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
             <RelativeLayout
+                android:id="@+id/moveBox"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="4dp"

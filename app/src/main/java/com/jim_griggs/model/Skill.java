@@ -26,35 +26,27 @@ public class Skill {
     public static final String SKILL_STEALTH = "Stealth";
     public static final String SKILL_SURVIVAL = "Survival";
 
-    public String skill_type;
-    public String stat_type;
-    public boolean proficient;
-    private Character mChar;
-
-    public Skill (Character character, String skill_type, String stat_type){
-        this.mChar = character;
-        this.skill_type = skill_type;
-        this.stat_type = stat_type;
-        this.proficient = false;
-    }
+    private String skillType;
+    private String statType;
+    private boolean proficient;
+    private Character mCharacter;
 
     public Skill (Character character, String skill_type, String stat_type, boolean proficient){
-        this.mChar = character;
-        this.skill_type = skill_type;
-        this.stat_type = stat_type;
+        this.mCharacter = character;
+        this.skillType = skill_type;
+        this.statType = stat_type;
         this.proficient = proficient;
     }
 
-    public Skill (Character character, JSONObject json){
-        this.mChar = character;
-        try {
-            this.skill_type = json.getString("type");
-            this.stat_type = json.getString("stat");
-            this.proficient = json.getBoolean("proficient");
-        } catch (JSONException ex){
-            ex.printStackTrace();
-        }
-    }
+    public String getSkillType() {return skillType;}
+    public void setSkillType(String skillType) {this.skillType = skillType;}
+
+    public String getStatType() {return statType;}
+    // TODO: update setStat to check for valid types.
+    public void setStatType(String statType) {this.statType = statType;}
+
+    public boolean isProficient() {return proficient;}
+    public void setProficient(boolean proficient) {this.proficient = proficient;}
 
     public int calcSkillCheck(int roll){
         return roll + getSkillBonus();
@@ -62,18 +54,18 @@ public class Skill {
 
     public int getSkillBonus(){
         int result;
-        result = mChar.getStatBonus(stat_type).value;
+        result = mCharacter.getStat(statType).getStatBonus().getValue();
         if (proficient){
-            result += mChar.getProfBonus().value;
+            result += mCharacter.getProficiencyBonus().getValue();
         }
         return result;
     }
 
-    public Collection<Bonus> getSkillBonuses(){
-        Collection<Bonus> result = new ArrayList<>();
-        result.add(mChar.getStatBonus(stat_type));
+    public ArrayList<Bonus> getSkillBonuses(){
+        ArrayList<Bonus> result = new ArrayList<>();
+        result.add(mCharacter.getStat(statType).getStatBonus());
         if (proficient){
-            result.add (mChar.getProfBonus());
+            result.add (mCharacter.getProficiencyBonus());
         }
         return result;
     }

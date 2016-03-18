@@ -1,0 +1,268 @@
+{
+  name:"Balta",
+  playername:"Jim Griggs",
+  race:"Dwarf",
+  alignment:"Lawful Good",
+  XP:1,
+  maxhp:189,
+  currenthp:189,
+  critRange:18,
+  inspiration:false,
+  raged:false,
+  class:{
+    class:"Fighter",
+    level:16
+  },
+  stats: [
+    {
+	  type:"STR",
+	  value:20,
+	  save:true
+	},
+    {
+	  type:"DEX",
+	  value:12,
+	  save:false
+	},
+    {
+	  type:"CON",
+	  value:16,
+	  save:true
+	},
+    {
+	  type:"INT",
+	  value:8,
+	  save:false
+	},
+    {
+	  type:"WIS",
+	  value:14,
+	  save:false
+	},
+    {
+	  type:"CHA",
+	  value:11,
+	  save:false
+	}
+  ],
+  AC:[
+    {
+	  type: "Armor",
+	  value: 20
+	},
+    {
+	  type: "Dual Wield",
+	  value: 1
+	},
+    {
+	  type: "Defense",
+	  value: 1
+	},
+    {
+	  type: "Shield",
+	  value: 3
+	}
+  ],
+  movement: [
+    {
+	  type: "Base",
+	  value: 25
+	},
+    {
+	  type: "Feat",
+	  value: 5
+	},
+	{
+	  type: "Boots",
+	  value: 5
+	}
+  ],
+  skills: [
+    {
+	  type:"Acrobatics",
+	  stat:"DEX",
+	  proficient:false
+    },
+    {
+	  type:"Animal Handling",
+	  stat:"WIS",
+	  proficient:false
+    },
+    {
+	  type:"Arcana",
+	  stat:"INT",
+	  proficient:false
+    },
+    {
+	  type:"Athletics",
+	  stat:"STR",
+	  proficient:true
+    },
+    {
+	  type:"Deception",
+	  stat:"CHA",
+	  proficient:false
+    },
+	{
+	  type:"History",
+	  stat:"INT",
+	  proficient:true
+    },
+    {
+	  type:"Insight",
+	  stat:"WIS",
+	  proficient:false
+    },
+    {
+	  type:"Intimidation",
+	  stat:"CHA",
+	  proficient:true
+    },
+    {
+	  type:"Investigation",
+	  stat:"INT",
+	  proficient:false
+    },
+    {
+	  type:"Medicine",
+	  stat:"WIS",
+	  proficient:false
+    },
+    {
+	  type:"Nature",
+	  stat:"INT",
+	  proficient:false
+    },
+    {
+	  type:"Perception",
+	  stat:"WIS",
+	  proficient:true
+    },
+    {
+	  type:"Performance",
+	  stat:"CHA",
+	  proficient:false
+    },
+    {
+	  type:"Persuation",
+	  stat:"CHA",
+	  proficient:false
+    },
+    {
+	  type:"Religion",
+	  stat:"INT",
+	  proficient:false
+    },
+    {
+	  type:"Sleight of Hand",
+	  stat:"DEX",
+	  proficient:false
+    },
+    {
+	  type:"Stealth",
+	  stat:"DEX",
+	  proficient:false
+    },
+    {
+	  type:"Survival",
+	  stat:"WIS",
+	  proficient:false
+    }
+  ],
+  attacks:[
+	{
+	   name:"Attack 1 - Defender +3",
+	   stat:"STR",
+	   proficient:true,
+	   damageDice:{
+  	     diceNumber:1,
+	     diceType:8
+	   },
+	   attackBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+	   ],
+	   damageBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+       ]
+	},
+	{
+	   name:"Attack 2 - Defender +3",
+	   stat:"STR",
+	   proficient:true,
+	   damageDice:{
+  	     diceNumber:1,
+	     diceType:8
+	   },
+	   attackBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+	   ],
+	   damageBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+       ]
+	},
+	{
+	   name:"Attack 3 - Defender +3",
+	   stat:"STR",
+	   proficient:true,
+	   damageDice:{
+  	     diceNumber:1,
+	     diceType:8
+	   },
+	   attackBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+	   ],
+	   damageBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+       ]
+	},
+	{
+	   name:"Bonus Attack - KalTorak +3",
+	   stat:"STR",
+	   proficient:true,
+	   damageDice:{
+  	     diceNumber:1,
+	     diceType:8
+	   },
+	   attackBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+	   ],
+	   damageBonuses:[
+         {
+		   type: "Weapon",
+		   value: 3
+		 }
+       ]
+	}
+  ],
+  feats: [
+    {
+	  levelAcquired: 2,
+	  name: "Sample Feat",
+	  description: "This is a sample feat.  It isn't real.  Don't even bother reading this.  Why are you still reading?  Go away.",
+	  maxUsage: 2,
+	  currentUsage: 0,
+	  refresh: "Short Rest"
+    }  
+  ]
+}

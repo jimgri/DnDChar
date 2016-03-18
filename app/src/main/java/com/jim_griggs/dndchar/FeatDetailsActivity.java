@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import com.jim_griggs.model.*;
 import com.jim_griggs.model.Character;
 
@@ -25,8 +24,8 @@ public class FeatDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int feat_position = intent.getIntExtra(FEAT_ID, -1);
 
-        Character c = Character.getInstance();
-        mFeat = c.feats.get(feat_position);
+        Character character = Character.getInstance();
+        mFeat = character.getFeats().get(feat_position);
 
         mName = (TextView) findViewById(R.id.featName);
         mDesc = (TextView) findViewById(R.id.featDescription);
@@ -34,11 +33,11 @@ public class FeatDetailsActivity extends AppCompatActivity {
         mRefresh = (TextView) findViewById(R.id.featRefresh);
         mLevel = (TextView) findViewById(R.id.featLevelAcquired);
 
-        mName.setText(mFeat.name);
-        mDesc.setText(mFeat.description);
-        mNum.setText(String.format("%1d", mFeat.numUsage));
-        mRefresh.setText(mFeat.refresh);
-        mLevel.setText(String.format("%1d", mFeat.levelAcquired));
+        mName.setText(mFeat.getName());
+        mDesc.setText(mFeat.getDescription());
+        mNum.setText(String.format("%1d", mFeat.getCurrentUsage()));
+        mRefresh.setText(mFeat.getRefresh());
+        mLevel.setText(String.format("%1d", mFeat.getLevelAcquired()));
 
     }
 }

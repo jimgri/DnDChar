@@ -8,27 +8,45 @@ import org.json.JSONObject;
  */
 public class Feat {
 
-    public String name;
-    public String description;
-    public int levelAcquired;
-    public int numUsage;
-    public String refresh;
+    private String name;
+    private String description;
+    private int levelAcquired;
+    private int maxUsage;
+    private String refresh;
     private int currentUsage;
 
-    public Feat (String name, String description){
+    public Feat (String name, String description, int levelAcquired, int maxUsage, int currentUsage, String refresh){
         this.name = name;
         this.description = description;
+        this.levelAcquired = levelAcquired;
+        this.maxUsage = maxUsage;
+        this.refresh = refresh;
+        this.currentUsage = currentUsage;
     }
 
-    public Feat (JSONObject json) {
-        try {
-            name = json.getString("name");
-            description = json.getString("description");
-            levelAcquired = json.getInt("levelAcquired");
-            numUsage = json.getInt("numUsage");
-            refresh = json.getString("refresh");
-        } catch (JSONException ex){
-            ex.printStackTrace();
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
+
+    public int getLevelAcquired() {return levelAcquired;}
+    public void setLevelAcquired(int levelAcquired) {this.levelAcquired = levelAcquired;}
+
+    public int getMaxUsage() {return maxUsage;}
+    public void setMaxUsage(int numUsage) {this.maxUsage = numUsage;}
+
+    public String getRefresh() {return refresh;}
+    public void setRefresh(String refresh) {this.refresh = refresh;}
+
+    public int getCurrentUsage() {return currentUsage;}
+    public void setCurrentUsage(int currentUsage) {
+        if (currentUsage < 0){
+            this.currentUsage = 0;
+        } else if (currentUsage > maxUsage) {
+            this.currentUsage = maxUsage;
+        } else {
+            this.currentUsage = currentUsage;
         }
     }
 
@@ -39,7 +57,7 @@ public class Feat {
     }
 
     public void restore(){
-        if (currentUsage < numUsage){
+        if (currentUsage < maxUsage){
             currentUsage += 1;
         }
     }

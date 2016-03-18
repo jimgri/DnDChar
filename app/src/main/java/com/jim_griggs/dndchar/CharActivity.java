@@ -13,26 +13,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
-
 import com.jim_griggs.data_adapter.JSONLoader;
+import com.jim_griggs.data_adapter.JSONSaver;
 import com.jim_griggs.model.Character;
 import com.jim_griggs.model.Bonus;
 import com.jim_griggs.model.Feat;
 
 public class CharActivity extends AppCompatActivity implements FeatListItem.FeatItemListener {
-    public final static String ATTACK_MESSAGE = "attack_number";
-    private final static int ATTACK_REQUEST = 1;
-    private int currentAttack;
-    private Character c;
-    private CharPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+    private static final int ATTACK_ACTIVITY_REQUEST_CODE = 1;
 
+    private Character mCharacter;
+    private ViewPager mViewPager;
+    private CharSheetBaseFrag mSummaryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +36,14 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
 
         // Load the character from file.
         JSONLoader jl = new JSONLoader();
+
         try {
-            jl.loadCharacterFile(this.getAssets().open(getString(R.string.saveFile)));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            jl.loadCharacterFile(this);
+        } catch (Exception ex){
+            jl.loadCharacterFromAsset(this, getString(R.string.saveFile));
         }
 
-        c = Character.getInstance();
+        mCharacter = Character.getInstance();
 
         setContentView(R.layout.activity_char);
 
@@ -54,12 +51,12 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         Toolbar myToolbar = (Toolbar) findViewById(R.id.appToolbar);
         setSupportActionBar(myToolbar);
 
-        mPagerAdapter = new CharPagerAdapter(getSupportFragmentManager());
+        CharPagerAdapter pagerAdapter = new CharPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.charPager);
-        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setTabsFromPagerAdapter(mPagerAdapter);
+        tabLayout.setTabsFromPagerAdapter(pagerAdapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -75,6 +72,12 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCharSummary();
     }
 
     @Override
@@ -96,9 +99,21 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         }
     }
 
+    public void saveCharacter (){
+        FileOutputStream outStream = null;
+        try {
+            outStream = openFileOutput(getString(R.string.saveFile), MODE_PRIVATE);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if (outStream != null) {
+            Runnable saver = new JSONSaver(outStream, mCharacter);
+            new Thread(saver).start();
+        }
+    }
+
     public void performAttack(){
-        currentAttack = 0;
-        launchAttackActivity(currentAttack);
+        launchAttackActivity();
     }
 
     public void launchCheckActivity(String pageTitle, String pageType, Collection<Bonus> bonuses){
@@ -109,27 +124,19 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         startActivity(i);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        Log.i("info", "Return from Attack Activity");
-        if (requestCode == ATTACK_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                currentAttack++;
-                if (currentAttack < c.attacks.size()) {
-                    launchAttackActivity(currentAttack);
-                } else {
-                    launchAttackResultsActivity();
-                }
-            }
-        }
+    private void launchAttackActivity (){
+        Intent intent = new Intent(this, AttackActivity.class);
+        startActivityForResult(intent, ATTACK_ACTIVITY_REQUEST_CODE);
     }
 
-    private void launchAttackActivity (int currentAttack){
-        Intent intent = new Intent(this, AttackActivity.class);
-        intent.putExtra(ATTACK_MESSAGE, currentAttack);
-        Log.i("info", "Creating Activity for Attack");
-        startActivityForResult(intent, ATTACK_REQUEST);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ATTACK_ACTIVITY_REQUEST_CODE){
+            if (resultCode == RESULT_OK){
+                launchAttackResultsActivity();
+            }
+        }
     }
 
     private void launchAttackResultsActivity (){
@@ -138,10 +145,23 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
     }
 
     public void onFeatItemClick(Feat feat){
-        int feat_position = c.feats.indexOf(feat);
+        int feat_position = mCharacter.getFeats().indexOf(feat);
         Intent i = new Intent(this, FeatDetailsActivity.class);
         i.putExtra(FeatDetailsActivity.FEAT_ID, feat_position);
         startActivity(i);
+    }
+
+    public void showHPDialog(){
+        HPDialogFragment newFragment = new HPDialogFragment();
+        newFragment.show(getSupportFragmentManager(), "hp_dialog");
+    }
+
+    public void updateCharSummary() {
+        if (mSummaryFragment != null){
+            mSummaryFragment.refresh();
+        }
+        // Whenever we have means to update the Char Summary fragment, also save the character.
+        saveCharacter();
     }
 
     private class CharPagerAdapter extends FragmentPagerAdapter{
@@ -161,9 +181,19 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
                     fragment = FeatsFragment.newInstance();
                     break;
                 default:
+                    // Yes, storing a reference to the frament ouside the pager means they
+                    // with remain in memory which kind of defeats the point of using an adapter.
+                    // However, we need to be able to make method calls on the Fragment as, as this
+                    // article indicates:
+                    // http://stackoverflow.com/questions/17685787/access-a-method-of-a-fragment-from-the-viewpager-activity
+                    // It s nearly impossible to do that without holding a reference.
+                    // I'll consider changing it if I have performance issues.
                     fragment = CharSheetBaseFrag.newInstance();
-                    break;
+                    mSummaryFragment = (CharSheetBaseFrag) fragment;
+                    return fragment;
             }
+            // Whenever we switch tabs, perform a character save.
+            saveCharacter();
             return fragment;
         }
 
