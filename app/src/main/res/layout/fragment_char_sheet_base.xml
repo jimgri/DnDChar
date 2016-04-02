@@ -1,285 +1,216 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
     tools:context="com.jim_griggs.dndchar.CharSheetBaseFrag"
-    android:tag="@string/char_summary_tag">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/statLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="4dp"
-        android:orientation="vertical" />
-
-    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:tag="@string/char_summary_tag">
 
-        <GridLayout
-            android:id="@+id/charGrid"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/statLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rowCount="6"
-            android:columnCount="2"
-            android:orientation="horizontal"
-            android:layout_margin="4dp"
-            android:background="@drawable/tiny_box_patch">
+            android:orientation="vertical" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:textSize="10dp"
-                android:layout_gravity="top|right"
-                android:text="Name" />
-
-            <TextView
-                android:id="@+id/charName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:textSize="10dp"
-                android:layout_gravity="top|right"
-                android:text="Race" />
-
-            <TextView
-                android:id="@+id/charRace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:textSize="10dp"
-                android:layout_gravity="top|right"
-                android:text="Class" />
-
-            <TextView
-                android:id="@+id/charClass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:textSize="10dp"
-                android:layout_gravity="top"
-                android:text="Alignment" />
-
-            <TextView
-                android:id="@+id/charAlignment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp" />
-
-        </GridLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Prof Bonus"
-                    android:layout_alignParentTop="true"/>
-                <TextView
-                    android:id="@+id/charProf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="24sp"
-                    android:text="+5" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-            <RelativeLayout
-                android:id="@+id/acBox"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Armor Class"
-                    android:layout_alignParentTop="true"/>
-                <TextView
-                    android:id="@+id/charAC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="24sp"
-                    android:text="+5" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-            <RelativeLayout
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Inspiration"
-                    android:layout_alignParentTop="true"/>
-                <CheckBox
-                    android:id="@+id/charInspiration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-            </RelativeLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Initiative"
-                    android:layout_alignParentTop="true"/>
-                <TextView
-                    android:id="@+id/charInit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="24sp"
-                    android:text="+5" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-            <RelativeLayout
-                android:id="@+id/moveBox"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Movement"
-                    android:layout_alignParentTop="true"/>
-                <TextView
-                    android:id="@+id/charMove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="24sp"
-                    android:text="+5" />
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-            <RelativeLayout
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="4dp"
-                android:background="@drawable/tiny_box_patch">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="10dp"
-                    android:text="Rage"
-                    android:layout_alignParentTop="true"/>
-                <CheckBox
-                    android:id="@+id/charRage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-            </RelativeLayout>
-        </LinearLayout>
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/tiny_box_patch">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textSize="10dp"
-                android:text="Hit Points"
-                android:layout_alignParentTop="true"/>
+            <GridLayout
+                android:id="@+id/charGrid"
+                style="@style/data_box"
+                android:layout_width="match_parent"
+                android:rowCount="6"
+                android:columnCount="2"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/charHP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textSize="24sp"
-                android:text="+5" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:background="@drawable/tiny_box_patch" >
-            <TextView
-                android:id="@+id/saveLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"
-                android:textSize="10dp"
-                android:text="Saving Rolls" />
+                <TextView
+                    style="@style/text_small"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin"
+                    android:layout_gravity="top|end"
+                    android:text="@string/name_label" />
+
+                <TextView
+                    android:id="@+id/charName"
+                    style="@style/text_medium"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin" />
+
+                <TextView
+                    style="@style/text_small"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin"
+                    android:layout_gravity="top|end"
+                    android:text="@string/race_label" />
+
+                <TextView
+                    android:id="@+id/charRace"
+                    style="@style/text_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin" />
+
+                <TextView
+                    style="@style/text_small"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin"
+                    android:layout_gravity="top|end"
+                    android:text="@string/class_label" />
+
+                <TextView
+                    android:id="@+id/charClass"
+                    style="@style/text_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin" />
+
+                <TextView
+                    style="@style/text_small"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin"
+                    android:layout_gravity="top"
+                    android:text="@string/alignment_label" />
+
+                <TextView
+                    android:id="@+id/charAlignment"
+                    style="@style/text_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/std_margin"
+                    android:layout_marginRight="@dimen/std_margin" />
+
+            </GridLayout>
             <LinearLayout
-                android:id="@+id/saveLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/saveLabel"/>
-        </RelativeLayout>
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/prof_bonus_label"/>
+                    <TextView
+                        android:id="@+id/charProf"
+                        style="@style/data_box_text"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <RelativeLayout
+                    android:id="@+id/acBox"
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/armor_class_label" />
+                    <TextView
+                        android:id="@+id/charAC"
+                        style="@style/data_box_text"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <RelativeLayout
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/inspiration_label" />
+                    <CheckBox
+                        android:id="@+id/charInspiration"
+                        style="@style/data_box_text"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/init_label" />
+                    <TextView
+                        android:id="@+id/charInit"
+                        style="@style/data_box_text"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <RelativeLayout
+                    android:id="@+id/moveBox"
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/movement_label" />
+                    <TextView
+                        android:id="@+id/charMove"
+                        style="@style/data_box_text"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <RelativeLayout
+                    style="@style/data_box_fixed">
+                    <TextView
+                        style="@style/header_small"
+                        android:text="@string/hit_dice_label" />
+                    <TextView
+                        android:id="@+id/hitDice"
+                        style="@style/data_box_text"
+                        android:textSize="18sp"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                style="@style/data_box_full">
+                <TextView
+                    style="@style/header_small"
+                    android:text="@string/hit_points_label" />
+                <TextView
+                    android:id="@+id/charHP"
+                    style="@style/data_box_text"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                style="@style/data_box">
+                <TextView
+                    android:id="@+id/saveLabel"
+                    style="@style/header_small"
+                    android:text="@string/saving_rolls_label" />
+                <LinearLayout
+                    android:id="@+id/saveLayout"
+                    android:layout_below="@id/saveLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                style="@style/data_box">
+                <TextView
+                    android:id="@+id/rageLabel"
+                    style="@style/header_small"
+                    android:text="@string/rage_label" />
+                <CheckBox
+                    android:id="@+id/charRage"
+                    android:layout_below="@id/rageLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

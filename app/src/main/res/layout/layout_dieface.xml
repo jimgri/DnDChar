@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="40dp"
-    android:layout_height="40dp">
+    android:layout_width="@dimen/die_face_size"
+    android:layout_height="@dimen/die_face_size">
 
     <ImageView
         android:id="@+id/dieFaceImage"

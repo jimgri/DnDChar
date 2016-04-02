@@ -1,9 +1,7 @@
 package com.jim_griggs.data_adapter;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
-
 import com.jim_griggs.model.Attack;
 import com.jim_griggs.model.Bonus;
 import com.jim_griggs.model.Character;
@@ -25,41 +23,41 @@ import java.util.Map;
 
 
 public class JSONSaver implements Runnable {
+    public static final String MODULE_NAME = "JSONSaver";
     public static final String FILE_NAME = "char.json";
 
-    private OutputStream mOutStream;
+    private Context mContext;
     private Character mCharacter;
 
-    public JSONSaver (OutputStream outStream, Character character) {
-        mOutStream = outStream;
+
+    public static void saveCharacter(Context context, Character character){
+        Runnable saver = new JSONSaver(context, character);
+        new Thread(saver).start();
+    }
+
+    private JSONSaver (Context context, Character character) {
+        mContext = context;
         mCharacter = character;
     }
 
     public void run() {
-        saveCharacter();
-    }
-
-    private void saveCharacter(){
+        FileOutputStream outStream = null;
         String outString = "";
 
         try {
-            outString = convertCharacter(mCharacter).toString(2);
+            JSONObject charJSON = convertCharacter(mCharacter);
+            outString = charJSON.toString(2);
         } catch (JSONException ex){
             ex.printStackTrace();
         }
 
-        Log.i("JSONSAVER",outString);
-
         try {
-            mOutStream.write(outString.getBytes());
-            mOutStream.close();
-        } catch (FileNotFoundException ex){
-            ex.printStackTrace();
+            outStream = mContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+            outStream.write(outString.getBytes());
+            outStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-        Log.i("save", "IT WORKED!!!");
     }
 
     private JSONObject convertCharacter(Character character){
@@ -70,6 +68,7 @@ public class JSONSaver implements Runnable {
             json.put ("race", character.getRace());
             json.put ("alignment", character.getAlignment());
             json.put ("XP", character.getXP());
+            json.put ("usedHitDice", character.getUsedHitDice());
             json.put ("maxhp", character.getMaxHP());
             json.put ("currenthp", character.getCurrentHP());
             json.put ("critRange", character.getCritRange());
@@ -85,6 +84,7 @@ public class JSONSaver implements Runnable {
             json.put("skills", convertSkills(character.getSkills()));
 
             json.put ("movement", convertBonusArray(character.getMovementBonuses()));
+            Log.i (MODULE_NAME, "Saving AC Array size: " + Integer.toString(character.getACBonuses().size()));
             json.put ("AC", convertBonusArray(character.getACBonuses()));
 
             json.put ("attacks", convertAttacks(character.getAttacks()));

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,8 +23,8 @@ public class AttackResultsListItem extends FrameLayout {
     private TextView mDamageResult;
     private LinearLayout mAttackBonuses;
     private LinearLayout mDamageBonuses;
+    private ViewGroup mRoot;
     public boolean mChecked = false;
-    private View mOverlay;
 
     public AttackResultsListItem(Context context){
         super(context);
@@ -50,7 +51,7 @@ public class AttackResultsListItem extends FrameLayout {
         lp.setMargins(8, 8, 8, 8);
         setLayoutParams(lp);
 
-        mOverlay = findViewById(R.id.overlay);
+        mRoot = (ViewGroup) findViewById(R.id.resultRoot);
         mAttackLabel = (TextView) findViewById(R.id.attackLabel);
         mAttackRoll = (TextView) findViewById(R.id.attackRoll);
         mDamageRoll = (TextView) findViewById(R.id.damageRoll);
@@ -105,12 +106,12 @@ public class AttackResultsListItem extends FrameLayout {
     private void drawBorder(){
         if (mChecked) {
             // Highlight the box.
-            Drawable d = mContext.getResources().getDrawable(R.drawable.blue_border, mContext.getTheme());
-            mOverlay.setBackground(d);
+            Drawable d = mContext.getResources().getDrawable(R.drawable.blue_border_thick, mContext.getTheme());
+            mRoot.setBackground(d);
         } else {
             // Un-highlight the box
-            Drawable d = mContext.getResources().getDrawable(R.drawable.black_border, mContext.getTheme());
-            mOverlay.setBackground(d);
+            Drawable d = mContext.getResources().getDrawable(R.drawable.black_border_thick, mContext.getTheme());
+            mRoot.setBackground(d);
         }
     }
 }

@@ -1,9 +1,12 @@
 package com.jim_griggs.dndchar;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,14 +46,17 @@ public class SkillsFrag extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Skill skill = (Skill) parent.getAdapter().getItem(position);
-                CharActivity act = (CharActivity) getActivity();
-                act.launchCheckActivity(String.format(getString(R.string.skillTitle), skill.getSkillType()), CheckActivity.TYPE_CHECK, skill.getSkillBonuses());
+                ActivityController controller = new ActivityController(getActivity());
+                controller.launchCheckActivity(String.format(getString(R.string.skillTitle),
+                        skill.getSkillType()), CheckActivity.TYPE_CHECK, skill.getSkillBonuses());
             }
         });
     }
 
     public class SkillAdapter extends ArrayAdapter<Skill> {
         private Context mContext;
+        private boolean mfirst = true;
+        private int mColor;
 
         // Constructor
         public SkillAdapter(Context context, int resource, List<Skill> objects) {
@@ -73,8 +79,15 @@ public class SkillsFrag extends Fragment {
             TextView name = (TextView) skillLayout.findViewById(R.id.skillName);
             bonus.setText(Integer.toString(skill.getSkillBonus()));
             name.setText(skill.getSkillType() + " (" + skill.getStatType() + ")");
+            if (mfirst){
+                mColor = name.getCurrentTextColor();
+                mfirst = false;
+            }
             if(skill.isProficient()){
-                name.setTextColor(ContextCompat.getColor(getContext(), R.color.blue));
+                name.setTextColor(ContextCompat.getColor(getContext(), R.color.skill_highlight));
+            } else {
+                //int c = ContextCompat.getColor(getContext(), android.R.attr.textColorPrimary);
+                name.setTextColor(mColor);
             }
             return skillLayout;
         }

@@ -1,24 +1,26 @@
 package com.jim_griggs.dndchar;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jim_griggs.model.Attack;
 import com.jim_griggs.model.Character;
 import com.jim_griggs.model.Dice;
 
+import java.util.HashMap;
+
 
 public class AttackActivity extends AppCompatActivity implements RollFragment.RollFragmentListener{
-    private int damageResult = 0;
-    private int attackResult = 0;
-    private Character mCharacter;
-    private Attack mAttack;
-    private int mAttackNum = 0;
-    private TextView attackLabel;
-    private RollFragment mAttackFrag;
-    private RollFragment mDamageFrag;
+    private static final String MODULE_NAME = "AttackActivity";
 
+    LinearLayout mAttackList;
+    private int[][] mResults;
+    private Character mCharacter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,64 +28,57 @@ public class AttackActivity extends AppCompatActivity implements RollFragment.Ro
         setContentView(R.layout.activity_attack);
 
         mCharacter = Character.getInstance();
+        mResults = new int[mCharacter.getAttacks().size()][2];
 
-        attackLabel = (TextView) findViewById(R.id.attackLabel);
+        mAttackList = (LinearLayout) findViewById(R.id.attackList);
 
-        mAttackFrag = RollFragment.newInstance("attack", new Dice(1,20));
-        Log.i("ATTACKACTIVITY","ATTACK FRAG NEWINSTANCE CALLED");
-        // Add the fragment to the Layout
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.attackDice, mAttackFrag).commit();
-
-        if (savedInstanceState != null) {
-            return;
+        for (int i=0; i < mCharacter.getAttacks().size(); i++){
+            AttackRoll attackView = new AttackRoll(this, i, mCharacter.getAttacks().get(i));
+            mAttackList.addView(attackView);
         }
-
-        displayAttack();
     }
 
-    private void displayAttack(){
-        attackResult = 0;
-        damageResult = 0;
-
-        mAttack = mCharacter.getAttacks().get(mAttackNum);
-        attackLabel.setText(String.format(getString(R.string.attackNum), mAttackNum + 1));
-
-        Log.i("AttackActivity", "Attempting to unselect attack die fragment");
-        if (mAttackFrag != null) {
-            mAttackFrag.unselect();
-        }
-
-        if (mDamageFrag != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .remove(mDamageFrag).commit();
-        }
-        mDamageFrag = RollFragment.newInstance("damage", mAttack.getDamageDice());
-        // Add the fragment to the Layout
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.damageDice, mDamageFrag).commit();
+    public void onCalcButton(View v){
+        calcResults();
     }
 
     public void onDiceRolled(String rollName, int result){
-        if (rollName.equals("attack")) {
-            attackResult = result;
+        String[] parts = rollName.split(":");
+
+        Log.i(MODULE_NAME, "onDiceRoll:" + rollName);
+        Log.i(MODULE_NAME, "onDiceRoll:" + parts[1]);
+
+        int attackNum = Integer.parseInt(parts[1]);
+
+        if (parts[0].equals("Attack")){
+            mResults[attackNum][0] = result;
+        } else if (parts[0].equals("Damage")){
+            mResults[attackNum][1] = result;
         }
 
-        if (rollName.equals("damage")) {
-            damageResult = result;
-        }
-
-        if (damageResult > 0 && attackResult > 0) {
-            mAttack.calcResults(attackResult, damageResult);
-            mAttackNum += 1;
-            if (mAttackNum < (mCharacter.getAttacks().size())) {
-                displayAttack();
-            } else {
-                this.setResult(RESULT_OK, this.getIntent());
-                finish();
+        boolean foundZero = false;
+        for (int[] i: mResults){
+            for (int j: i){
+                if (j == 0){
+                    foundZero = true;
+                    break;
+                }
             }
+        }
+
+        if (!foundZero){
+            calcResults();
         }
     }
 
-
+    private void calcResults() {
+        // Move results to the character
+        for (int i = 0; i < mCharacter.getAttacks().size(); i++) {
+            // calc the attack results
+            mCharacter.getAttacks().get(i).calcResults(mResults[i][0], mResults[i][1]);
+        }
+        // finish the activity
+        ActivityController c = new ActivityController(this);
+        c.launchAttackResultsActivity();
+    }
 }

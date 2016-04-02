@@ -4,11 +4,26 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_attack_results">AttackResultsActivity</string>
 
+    <string name="name_label">Name</string>
+    <string name="race_label">Race</string>
+    <string name="class_label">Class</string>
+    <string name="alignment_label">Alignment</string>
+    <string name="prof_bonus_label">Prof Bonus</string>
+    <string name="armor_class_label">Armor Class</string>
+    <string name="inspiration_label">Inspiration</string>
+    <string name="init_label">Initiative</string>
+    <string name="movement_label">Movement</string>
+    <string name="hit_dice_label">Hit Dice</string>
+    <string name="hit_points_label">Hit Points</string>
+    <string name="saving_rolls_label">Saving Rolls</string>
+    <string name="rage_label">Rage</string>
+
     <string name="attackNum">Attack Number: %1$d</string>
     <string name="roll">Roll: %1$d</string>
     <string name="hit">Hit: %1$d</string>
     <string name="damage">Damage: %1$d</string>
     <string name="toolbar_attack">Attack!</string>
+    <string name="toolbar_reset">Reset!</string>
     <string name="skillTitle">%1$s Check</string>
     <string name="saveTitle">%1$s Save</string>
     <string name="runningDamage">Total Damage: %1$d</string>

@@ -38,7 +38,7 @@ public class Stat {
     public void setProficient(boolean proficient) {this.proficient = proficient;}
 
     public Bonus getStatBonus() {
-        //TODO:  Confirm thsi equation to convert Stat to Bonus
+        //TODO:  Confirm this equation to convert Stat to Bonus
         if (statBonus == null) {
             statBonus = new Bonus(Bonus.BONUS_STAT, (this.value/2) - 5);
         }

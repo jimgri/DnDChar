@@ -6,6 +6,7 @@
   XP:1,
   maxhp:189,
   currenthp:189,
+  usedHitDice: 3,
   critRange:18,
   inspiration:false,
   raged:false,
@@ -257,12 +258,101 @@
   ],
   feats: [
     {
-	  levelAcquired: 2,
-	  name: "Sample Feat",
-	  description: "This is a sample feat.  It isn't real.  Don't even bother reading this.  Why are you still reading?  Go away.",
+	  name: "Dual Wielder",
+	  description: "You master fighting with two weapons, gaining the following benefits:<BR>
+&#8226;You gain a +1 bonus to AC while yo uare wielding a seperate melee weapon in each hand.<BR>
+&#8226;You can use two-weapon fighting even when the one-handed melee weapons you are wielding aren't light.<BR>
+&#8226;You can draw or stow two one-handed weapons when you would normally be able to draw or stow only one.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 0
+    },
+    {
+	  name: "Mobile",
+	  description: "You are exceptionally speedy and agile.  You gain the following benefits:<BR>
+&#8226;Your speed increases by 10 feet.<BR>
+&#8226;When you use the Dash action, difficult terrain doesn't cost you extra movement on that turn.<BR>
+&#8226;When you make a melee attack against a creature, you don't provoke opportunity attacks from that creature for the rest of the turn, whether you hit or not.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 0
+    },
+    {
+	  name: "Mager Slayer",
+	  description: "You have practiced techniques useful in melee combat against spellcasters, gaining the following benefits:<BR>
+&#8226;When a creature within 5 feet of you casts a spell, you can use your reaction to to make a melee weapon attack against that creature.<BR>
+&#8226;When you damage a creature that is concentrating on a spell, that creature has disadvantage on the saving throw it makes to maintain its concentration.<BR>
+&#8226;You have advantage on saving throws against spells cast by creatures within 5 feet of you.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 0
+    },
+    {
+	  name: "Fighting Style: Two-Weapon Fighting",
+	  description: "When you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 1
+    },
+    {
+	  name: "Additional Fighting Style: Defense",
+	  description: "While you are wearing armor, you gain a +1 bonus to AC.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 10
+    },
+    {
+	  name: "Second Wind",
+	  description: "You have a limited well of stamina that you can draw on to protect yourself from harm.  On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.  Once you use this feature, you must finish a short or long rest before you can use it again.",
+	  maxUsage: 1,
+	  currentUsage: 0,
+	  refresh: "Short Rest",
+	  levelAcquired: 1
+    },
+    {
+	  name: "Action Surge",
+	  description: "Starting at 2nd level, you can push yourself beyond your normal limits for a moment.  On your turn, you can take one additional action on top of your regular action and a possible bonus action.  Once you use this feature, you must finish a short or long rest before you can use it again.  Starting at 17th level, you can use it twice before a rest, but only once on the same turn.",
 	  maxUsage: 2,
 	  currentUsage: 0,
-	  refresh: "Short Rest"
-    }  
+	  refresh: "Short Rest",
+	  levelAcquired: 2
+    },
+    {
+	  name: "Extra Attack",
+	  description: "Beginning at 5th level, you can attack twice, instead of once, whenever you take an Attack action on your turn.  The number of attacks increases to three when you reach 11th level in this class and to four when you reach 20th level in this class.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 5
+    },
+    {
+	  name: "Indomitable",
+	  description: "Beginning at 9th level, you can reroll a saving throw that you fail.  If you do so, you must use the new roll, and you can't use this feature again until you finish a long rest.  You can use this feature twice betweeen long rests starting at 13th level and three times between long rests at 17th level.",
+	  maxUsage: 3,
+	  currentUsage: 0,
+	  refresh: "Long Rest",
+	  levelAcquired: 9
+    },
+    {
+	  name: "Remarkable Athlete",
+	  description: "Starting at 7th level, you can add half your proficiency bonus (rounded up) to any Strength, Dexterity, or COnstitution check you make that doesn't already use your proficiency bonus.  <P>In addition, when you make a running long jump, the distance you can cover increases by a number of feet equal to your Strength modifier.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 7
+    },
+    {
+	  name: "Superior Critical",
+	  description: "Starting at 15th level, your weapon attacks score a critical hit on a roll of 18-20.",
+	  maxUsage: 0,
+	  currentUsage: 0,
+	  refresh: "N/A",
+	  levelAcquired: 15
+    }
   ]
 }

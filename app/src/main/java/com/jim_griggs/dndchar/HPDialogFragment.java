@@ -1,5 +1,6 @@
 package com.jim_griggs.dndchar;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
@@ -13,7 +14,16 @@ import com.jim_griggs.model.Character;
 
 public class HPDialogFragment extends DialogFragment {
 
+    private onCharacterUpdateListener mListener;
     private NumberPicker mPicker;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof onCharacterUpdateListener){
+            mListener = (onCharacterUpdateListener) activity;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +51,9 @@ public class HPDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Character.getInstance().takeDamage(mPicker.getValue());
-                ((CharActivity)getActivity()).updateCharSummary();
+                if (mListener != null){
+                    mListener.onCharacterUpdate();
+                }
                 dismiss();
             }
         });
@@ -49,7 +61,9 @@ public class HPDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Character.getInstance().heal(mPicker.getValue());
-                ((CharActivity) getActivity()).updateCharSummary();
+                if (mListener != null){
+                    mListener.onCharacterUpdate();
+                }
                 dismiss();
             }
         });
@@ -69,8 +83,6 @@ public class HPDialogFragment extends DialogFragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
-
-
 }
 
 

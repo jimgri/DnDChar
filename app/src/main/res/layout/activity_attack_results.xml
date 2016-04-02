@@ -10,15 +10,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/attackResultsList"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:dividerHeight="3dp"/>
-
+        android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/attackResultsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
     <TextView
         android:id="@+id/runningDamage"
         android:layout_width="wrap_content"

@@ -7,17 +7,19 @@
     tools:context="com.jim_griggs.dndchar.CharActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appToolbar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        android:background="@color/dark_red"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appToolbar"
+        android:layout_below="@+id/toolbar"
         android:elevation="6dp"
+        android:background="@color/dark_tan"
         android:minHeight="?attr/actionBarSize" />
 
     <android.support.v4.view.ViewPager
@@ -28,6 +30,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin" />
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@color/parchment"/>
 
 </RelativeLayout>

@@ -21,11 +21,8 @@ public class FeatListAdapter extends ArrayAdapter<Feat> {
     public View getView(int position, View convertView, ViewGroup parent) {
         FeatListItem layout;
 
-        if (convertView == null) {
-            layout = new FeatListItem(mContext);
-        } else {
-            layout = (FeatListItem) convertView;
-        }
+        // TODO:  reuse the convertView object instead of always recreating.
+        layout = new FeatListItem(mContext);
         layout.setFeat(getItem(position));
         return layout;
     }

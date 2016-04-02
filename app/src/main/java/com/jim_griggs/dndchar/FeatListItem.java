@@ -14,13 +14,8 @@ import com.jim_griggs.model.Feat;
 public class FeatListItem extends LinearLayout {
     Feat mFeat;
     Context mContext;
-    FeatItemListener mListener;
     TextView mNameView;
     ViewGroup mUsageLayout;
-
-    public static interface FeatItemListener {
-        public void onFeatItemClick(Feat feat);
-    }
 
     public FeatListItem (Context context){
         super(context);
@@ -39,9 +34,6 @@ public class FeatListItem extends LinearLayout {
 
     private void initalize(Context context) {
         mContext = context;
-        if (context instanceof FeatItemListener) {
-            mListener = (FeatItemListener) context;
-        }
         LayoutInflater.from(mContext).inflate(R.layout.feat_template, this);
         mNameView = (TextView) this.findViewById(R.id.featName);
         mUsageLayout = (ViewGroup) this.findViewById(R.id.usageChecks);
@@ -52,8 +44,13 @@ public class FeatListItem extends LinearLayout {
 
         mNameView.setText(mFeat.getName());
 
-        for (int i=0; i<mFeat.getCurrentUsage(); i++) {
+        int count = mFeat.getCurrentUsage();
+        for (int i=0; i <mFeat.getMaxUsage(); i++) {
             CheckBox c = new CheckBox(mContext);
+            if (count > 0){
+                c.setChecked(true);
+                count--;
+            }
             c.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -68,13 +65,12 @@ public class FeatListItem extends LinearLayout {
             mUsageLayout.addView(c);
         }
 
-        if (mListener != null) {
-            this.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onFeatItemClick(mFeat);
-                }
-            });
-        }
+        this.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityController controller = new ActivityController(mContext);
+                controller.launchFeatDetailsActivity(mFeat);
+            }
+        });
     }
 }

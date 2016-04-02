@@ -7,5 +7,9 @@
         android:icon="@drawable/ic_security_black_18dp"
         android:title="@string/toolbar_attack"
         app:showAsAction="ifRoom"/>
-
+    <item
+        android:id="@+id/toolbarReset"
+        android:icon="@drawable/ic_cached_black_24dp"
+        android:title="@string/toolbar_reset"
+        app:showAsAction="ifRoom"/>
 </menu>

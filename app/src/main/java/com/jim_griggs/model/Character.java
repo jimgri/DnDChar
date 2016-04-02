@@ -53,6 +53,9 @@ public class Character {
     private int XP;
     private int maxHP;
     private int currentHP;
+    private int hitDiceMax;
+    private int usedHitDice;
+    private Dice hitDie;
     private int critRange;
     private boolean raged;
     private Bonus rageBonus;
@@ -68,14 +71,21 @@ public class Character {
     public static Character getInstance() {
         if(mInstance == null) {
             mInstance = new Character();
-            mInstance.stats = new LinkedHashMap<String, Stat>();
-            mInstance.skills = new LinkedHashMap<String, Skill>();
-            mInstance.ACBonuses = new ArrayList<Bonus>();
-            mInstance.movementBonuses = new ArrayList<Bonus>();
-            mInstance.feats = new ArrayList<Feat>();
-            mInstance.attacks = new ArrayList<Attack>();
         }
         return mInstance;
+    }
+
+    public static void destroyInstance() {
+        mInstance = null;
+    }
+
+    private Character(){
+        stats = new LinkedHashMap<String, Stat>();
+        skills = new LinkedHashMap<String, Skill>();
+        ACBonuses = new ArrayList<Bonus>();
+        movementBonuses = new ArrayList<Bonus>();
+        feats = new ArrayList<Feat>();
+        attacks = new ArrayList<Attack>();
     }
 
     public String getName() {return name;}
@@ -90,7 +100,18 @@ public class Character {
     public void setRace(String race) {this.race = race;}
 
     public int getLevel() {return level;}
-    public void setLevel(int level) {this.level = level;}
+    public void setLevel(int level) {
+        this.level = level;
+        hitDiceMax = this.level;
+        hitDie = new Dice(1,10);
+    }
+
+    public int getHitDiceMax() {return hitDiceMax;}
+
+    public int getUsedHitDice() {return usedHitDice;}
+    public int getRemainingHitDice() {return getHitDiceMax() - getUsedHitDice();}
+    // TODO:  validate values.
+    public void setUsedHitDice(int usedHitDice) {this.usedHitDice = usedHitDice;}
 
     public String getPlayerName() {return playerName;}
     public void setPlayerName(String playerName) {this.playerName = playerName;}
@@ -116,6 +137,7 @@ public class Character {
 
     public boolean isInspired() {return inspired;}
     public void setInspired(boolean insired) {this.inspired = insired;}
+
 
 
     public Map<String, Stat> getStats(){

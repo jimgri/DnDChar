@@ -1,6 +1,5 @@
 package com.jim_griggs.dndchar;
 
-import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,41 +14,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
+
 import com.jim_griggs.data_adapter.JSONLoader;
 import com.jim_griggs.data_adapter.JSONSaver;
 import com.jim_griggs.model.Character;
-import com.jim_griggs.model.Bonus;
-import com.jim_griggs.model.Feat;
 
-public class CharActivity extends AppCompatActivity implements FeatListItem.FeatItemListener {
-    private static final int ATTACK_ACTIVITY_REQUEST_CODE = 1;
-
-    private Character mCharacter;
+public class CharActivity extends AppCompatActivity implements onCharacterUpdateListener {
+    private static final String MODULE_NAME = "CharActivity";
     private ViewPager mViewPager;
     private CharSheetBaseFrag mSummaryFragment;
+    private ActivityController mController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Load the character from file.
-        JSONLoader jl = new JSONLoader();
-
-        try {
-            jl.loadCharacterFile(this);
-        } catch (Exception ex){
-            jl.loadCharacterFromAsset(this, getString(R.string.saveFile));
-        }
-
-        mCharacter = Character.getInstance();
+        mController = new ActivityController(this);
 
         setContentView(R.layout.activity_char);
 
         // Set the activity toolbar.
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.appToolbar);
-        setSupportActionBar(myToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         CharPagerAdapter pagerAdapter = new CharPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.charPager);
@@ -74,9 +60,18 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         });
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveCharacter();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(MODULE_NAME, "onResume Called.");
+        loadCharacter();
         updateCharSummary();
     }
 
@@ -92,7 +87,10 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.toolbarAttack:
-                performAttack();
+                mController.launchAttackActivity();
+                return true;
+            case R.id.toolbarReset:
+                performReset();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -100,55 +98,26 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
     }
 
     public void saveCharacter (){
-        FileOutputStream outStream = null;
+        JSONSaver.saveCharacter(this, Character.getInstance());
+    }
+
+    public void loadCharacter(){
+        // Load the character from file.
+        JSONLoader jl = new JSONLoader();
         try {
-            outStream = openFileOutput(getString(R.string.saveFile), MODE_PRIVATE);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        if (outStream != null) {
-            Runnable saver = new JSONSaver(outStream, mCharacter);
-            new Thread(saver).start();
+            jl.loadCharacterFile(this);
+            Log.i (MODULE_NAME, "Loading From File Complete.");
+        } catch (Exception ex){
+            jl.loadCharacterFromAsset(this, getString(R.string.saveFile));
+            Log.i (MODULE_NAME, "Loading From Asset Complete.");
         }
     }
 
-    public void performAttack(){
-        launchAttackActivity();
-    }
-
-    public void launchCheckActivity(String pageTitle, String pageType, Collection<Bonus> bonuses){
-        Intent i = new Intent(this, CheckActivity.class);
-        i.putExtra(CheckActivity.CHECK_TITLE, pageTitle);
-        i.putExtra(CheckActivity.CHECK_TYPE, pageType);
-        i.putExtra(CheckActivity.CHECK_BONUSES, (Serializable) bonuses);
-        startActivity(i);
-    }
-
-    private void launchAttackActivity (){
-        Intent intent = new Intent(this, AttackActivity.class);
-        startActivityForResult(intent, ATTACK_ACTIVITY_REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ATTACK_ACTIVITY_REQUEST_CODE){
-            if (resultCode == RESULT_OK){
-                launchAttackResultsActivity();
-            }
-        }
-    }
-
-    private void launchAttackResultsActivity (){
-        Intent intent = new Intent(this, AttackResultsActivity.class);
-        startActivity(intent);
-    }
-
-    public void onFeatItemClick(Feat feat){
-        int feat_position = mCharacter.getFeats().indexOf(feat);
-        Intent i = new Intent(this, FeatDetailsActivity.class);
-        i.putExtra(FeatDetailsActivity.FEAT_ID, feat_position);
-        startActivity(i);
+    public void performReset(){
+        // Load the character from the asset file.
+        JSONLoader jl = new JSONLoader();
+        jl.loadCharacterFromAsset(this, getString(R.string.saveFile));
+        updateCharSummary();
     }
 
     public void showHPDialog(){
@@ -156,12 +125,15 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
         newFragment.show(getSupportFragmentManager(), "hp_dialog");
     }
 
+    public void onCharacterUpdate(){
+        updateCharSummary();
+        saveCharacter();
+    }
+
     public void updateCharSummary() {
         if (mSummaryFragment != null){
             mSummaryFragment.refresh();
         }
-        // Whenever we have means to update the Char Summary fragment, also save the character.
-        saveCharacter();
     }
 
     private class CharPagerAdapter extends FragmentPagerAdapter{
@@ -181,7 +153,7 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
                     fragment = FeatsFragment.newInstance();
                     break;
                 default:
-                    // Yes, storing a reference to the frament ouside the pager means they
+                    // Yes, storing a reference to the fragment outside the pager means they
                     // with remain in memory which kind of defeats the point of using an adapter.
                     // However, we need to be able to make method calls on the Fragment as, as this
                     // article indicates:
@@ -192,8 +164,6 @@ public class CharActivity extends AppCompatActivity implements FeatListItem.Feat
                     mSummaryFragment = (CharSheetBaseFrag) fragment;
                     return fragment;
             }
-            // Whenever we switch tabs, perform a character save.
-            saveCharacter();
             return fragment;
         }
 

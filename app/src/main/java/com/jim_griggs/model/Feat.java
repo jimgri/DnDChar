@@ -3,10 +3,12 @@ package com.jim_griggs.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by tdevjwg on 3/3/2016.
  */
-public class Feat {
+public class Feat implements Serializable {
 
     private String name;
     private String description;
@@ -34,7 +36,7 @@ public class Feat {
     public void setLevelAcquired(int levelAcquired) {this.levelAcquired = levelAcquired;}
 
     public int getMaxUsage() {return maxUsage;}
-    public void setMaxUsage(int numUsage) {this.maxUsage = numUsage;}
+    public void setMaxUsage(int maxUsage) {this.maxUsage = maxUsage;}
 
     public String getRefresh() {return refresh;}
     public void setRefresh(String refresh) {this.refresh = refresh;}
@@ -51,14 +53,14 @@ public class Feat {
     }
 
     public void use(){
-        if (currentUsage > 0){
-            currentUsage -= 1;
+        if (currentUsage < maxUsage){
+            currentUsage++;
         }
     }
 
     public void restore(){
-        if (currentUsage < maxUsage){
-            currentUsage += 1;
+        if (currentUsage > 0){
+            currentUsage--;
         }
     }
 }

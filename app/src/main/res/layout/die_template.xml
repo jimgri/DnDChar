@@ -3,7 +3,6 @@
     android:id="@+id/dieLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:numColumns="8"
     android:horizontalSpacing="0dp"
     android:verticalSpacing="0dp"
     android:gravity="center" />

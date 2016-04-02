@@ -25,6 +25,7 @@ import com.jim_griggs.model.Stat;
 
 
 public class JSONLoader {
+    private static final String MODULE_NAME = "JSONLoader";
 
     public void loadCharacterFromAsset(Context context, String filename) {
         JSONObject jsonObject = null;
@@ -82,12 +83,14 @@ public class JSONLoader {
 
     private void convertCharacter(JSONObject json){
         try {
+            Character.destroyInstance();
             Character character = Character.getInstance();
             character.setName(json.getString("name"));
             character.setPlayerName(json.getString("playername"));
             character.setRace(json.getString("race"));
             character.setAlignment(json.getString("alignment"));
             character.setXP(json.getInt("XP"));
+            character.setUsedHitDice(json.getInt("usedHitDice"));
             character.setMaxHP(json.getInt("maxhp"));
             character.setCurrentHP(json.getInt("currenthp"));
             character.setCritRange(json.getInt("critRange"));
@@ -105,6 +108,7 @@ public class JSONLoader {
             }
 
             JSONArray acBonuses = json.getJSONArray("AC");
+            Log.i (MODULE_NAME, "Size of AC array: " + Integer.toString(acBonuses.length()));
             for (int i=0; i<acBonuses.length(); i++) {
                 Bonus b = convertBonus((JSONObject) acBonuses.get(i));
                 character.addACBonus(b);
@@ -135,6 +139,7 @@ public class JSONLoader {
             }
         } catch (JSONException ex) {
             ex.printStackTrace();
+            throw new RuntimeException("Error parsing saved file.");
         }
     }
 
@@ -199,10 +204,10 @@ public class JSONLoader {
             String name = json.getString("name");
             String description = json.getString("description");
             int levelAcquired = json.getInt("levelAcquired");
-            int numUsage = json.getInt("maxUsage");
+            int maxUsage = json.getInt("maxUsage");
             int currentUsage = json.getInt("currentUsage");
             String refresh = json.getString("refresh");
-            return new Feat(name, description, levelAcquired, numUsage, currentUsage, refresh);
+            return new Feat(name, description, levelAcquired, maxUsage, currentUsage, refresh);
         } catch (JSONException ex){
             ex.printStackTrace();
             return null;
