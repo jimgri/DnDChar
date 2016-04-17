@@ -55,12 +55,18 @@ public class AttackRoll extends LinearLayout{
         mActivity.getSupportFragmentManager().beginTransaction()
                 .add(id, attackRoll).commit();
 
-        id = View.generateViewId();
-        mDamageRoll.setId(id);
+        if (mAttack.isTakeTenDamage()) {
+            mDamageRoll.setVisibility(View.GONE);
+            View divider = findViewById(R.id.divider);
+            divider.setVisibility(View.GONE);
+        } else {
+            id = View.generateViewId();
+            mDamageRoll.setId(id);
 
-        RollFragment damageRoll = RollFragment.newInstance("Damage:" + Integer.toString(mAttackNum), mAttack.getDamageDice());
-        // Add the fragment to the Layout
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .add(id, damageRoll).commit();
+            RollFragment damageRoll = RollFragment.newInstance("Damage:" + Integer.toString(mAttackNum), mAttack.getDamageDice());
+            // Add the fragment to the Layout
+            mActivity.getSupportFragmentManager().beginTransaction()
+                    .add(id, damageRoll).commit();
+        }
     }
 }

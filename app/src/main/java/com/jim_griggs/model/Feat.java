@@ -9,6 +9,9 @@ import java.io.Serializable;
  * Created by tdevjwg on 3/3/2016.
  */
 public class Feat implements Serializable {
+    public static final String REFRESH_SHORTREST = "Short Rest";
+    public static final String REFRESH_LONGREST = "Long Rest";
+    public static final String REFRESH_NONE = "N/A";
 
     private String name;
     private String description;

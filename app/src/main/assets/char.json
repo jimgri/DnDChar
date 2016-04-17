@@ -6,13 +6,13 @@
   XP:1,
   maxhp:189,
   currenthp:189,
-  usedHitDice: 3,
+  remainingHitDice: 3,
   critRange:18,
   inspiration:false,
   raged:false,
   class:{
     class:"Fighter",
-    level:16
+    level:17
   },
   stats: [
     {
@@ -175,6 +175,7 @@
 	   name:"Attack 1 - Defender +3",
 	   stat:"STR",
 	   proficient:true,
+	   takeTenDamage:true,
 	   damageDice:{
   	     diceNumber:1,
 	     diceType:8
@@ -196,6 +197,7 @@
 	   name:"Attack 2 - Defender +3",
 	   stat:"STR",
 	   proficient:true,
+	   takeTenDamage:true,
 	   damageDice:{
   	     diceNumber:1,
 	     diceType:8
@@ -217,6 +219,7 @@
 	   name:"Attack 3 - Defender +3",
 	   stat:"STR",
 	   proficient:true,
+	   takeTenDamage:true,
 	   damageDice:{
   	     diceNumber:1,
 	     diceType:8
@@ -238,6 +241,7 @@
 	   name:"Bonus Attack - KalTorak +3",
 	   stat:"STR",
 	   proficient:true,
+	   takeTenDamage:false,
 	   damageDice:{
   	     diceNumber:1,
 	     diceType:8

@@ -3,13 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- "Attack", should appear as action button if possible -->
     <item
-        android:id="@+id/toolbarAttack"
-        android:icon="@drawable/ic_security_black_18dp"
-        android:title="@string/toolbar_attack"
+        android:id="@+id/toolbarShortRest"
+        android:icon="@drawable/ic_forward_1_black_36dp"
+        android:title="@string/toolbar_shortrest"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/toolbarLongRest"
+        android:icon="@drawable/ic_forward_8_black_36dp"
+        android:title="@string/toolbar_longrest"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/toolbarReset"
-        android:icon="@drawable/ic_cached_black_24dp"
+        android:icon="@drawable/ic_security_black_18dp"
         android:title="@string/toolbar_reset"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>

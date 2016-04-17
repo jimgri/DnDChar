@@ -1,68 +1,94 @@
 package com.jim_griggs.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Attack {
-    private String name;
-    private String statType;
-    private boolean proficient;
-    private Dice attackDice = new Dice(1, 20);
-    private Dice damageDice;
-    private ArrayList<Bonus> attackBonuses;
-    private ArrayList<Bonus> damageBonuses;
-    private Bonus mCritBonus;
-    private Bonus mRageBonus;
-    private int attackRoll;
-    private int damageRoll;
-    private int attackResult;
-    private int damageResult;
+    private static final String MODULE_NAME = "Attack";
+
+    private String mName;
+    private String mStatType;
+    private boolean mProficient;
+    private Dice mAttackDice = new Dice(1, 20);
+    private Dice mDamageDice;
+    private ArrayList<Bonus> mAttackBonuses;
+    private ArrayList<Bonus> mDamageBonuses;
+    private int mAttackRoll;
+    private int mDamageRoll;
+    private boolean mTakeTenDamage;
+    private boolean mCrit;
+    private int mCritRoll;
+    private int mAttackResult;
+    private int mDamageResult;
 
     private Character mCharacter;
 
-    public Attack(Character character, String name, String statType, boolean proficient){
+    public Attack(Character character, String name, String statType, boolean proficient, boolean takeTenDamage){
         this.mCharacter = character;
-        this.name = name;
-        this.statType = statType;
-        this.proficient = proficient;
-        this.attackBonuses = new ArrayList<>();
-        this.damageBonuses = new ArrayList<>();
+        this.mName = name;
+        this.mStatType = statType;
+        this.mProficient = proficient;
+        this.mTakeTenDamage = takeTenDamage;
+        this.mAttackBonuses = new ArrayList<>();
+        this.mDamageBonuses = new ArrayList<>();
     }
 
-    public void setName(String name) { this.name = name; }
-    public String getName() { return this.name; }
+    public void setName(String name) { this.mName = name; }
+    public String getName() { return this.mName; }
 
-    public String getStatType() {return statType;}
-    public void setStatType(String statType) {this.statType = statType;}
+    public String getStatType() {return mStatType;}
+    public void setStatType(String statType) {this.mStatType = statType;}
 
-    public boolean isProficient() {return proficient;}
-    public void setProficient(boolean proficient) {this.proficient = proficient;}
+    public boolean isProficient() {return mProficient;}
+    public void setProficient(boolean proficient) {this.mProficient = proficient;}
 
-    public void setDamageDice(Dice damageDice) {this.damageDice = damageDice;}
-    public Dice getDamageDice() { return this.damageDice; }
+    public void setDamageDice(Dice damageDice) {this.mDamageDice = damageDice;}
+    public Dice getDamageDice() { return this.mDamageDice; }
 
-    public Dice getAttackDice() { return this.attackDice; }
+    public Dice getAttackDice() { return this.mAttackDice; }
 
-    public void addAttackBonus(Bonus newBonus){this.attackBonuses.add(newBonus);}
-    public ArrayList<Bonus> getAttackBonuses() { return this.attackBonuses; }
+    public boolean isTakeTenDamage(){
+        return mTakeTenDamage;
+    }
 
-    public void addDamageBonus(Bonus newBonus){this.damageBonuses.add(newBonus);}
-    public ArrayList<Bonus> getDamageBonuses() { return this.damageBonuses; }
+    public void setTakeTenDamage(boolean takeTenDamage){
+        mTakeTenDamage = takeTenDamage;
+    }
 
-    public int getAttackRoll() {return attackRoll;}
-    public void setAttackRoll(int attackRoll) {this.attackRoll = attackRoll;}
+    public boolean isCrit(){
+        return mCrit;
+    }
 
-    public int getDamageRoll() {return damageRoll;}
-    public void setDamageRoll(int damageRoll) {this.damageRoll = damageRoll;}
+    public int getCritRoll(){
+        return mCritRoll;
+    }
 
-    public int getAttackResult() {return attackResult;}
-    public void setAttackResult(int attackResult) {this.attackResult = attackResult;}
+    public void addAttackBonus(Bonus newBonus){this.mAttackBonuses.add(newBonus);}
+    public ArrayList<Bonus> getAttackBonuses() { return this.mAttackBonuses; }
 
-    public int getDamageResult() {return damageResult;}
-    public void setDamageResult(int damageResult) {this.damageResult = damageResult;}
+    public void addDamageBonus(Bonus newBonus){
+        Log.i(MODULE_NAME, "Adding Damage Bonus: " + newBonus.getType());
+        this.mDamageBonuses.add(newBonus);
+    }
+    public ArrayList<Bonus> getDamageBonuses() { return this.mDamageBonuses; }
+
+    public int getAttackRoll() {return mAttackRoll;}
+    public void setAttackRoll(int attackRoll) {this.mAttackRoll = attackRoll;}
+
+    public int getDamageRoll() {return mDamageRoll;}
+    public void setDamageRoll(int damageRoll) {this.mDamageRoll = damageRoll;}
+
+    public int getAttackResult() {return mAttackResult;}
+    public void setAttackResult(int attackResult) {this.mAttackResult = attackResult;}
+
+    public int getDamageResult() {return mDamageResult;}
+    public void setDamageResult(int damageResult) {this.mDamageResult = damageResult;}
 
     public int getTotalAttackBonus(){
         int total = 0;
-        for(Bonus b: attackBonuses){
+        for(Bonus b: mAttackBonuses){
             total += b.getValue();
         }
         return total;
@@ -70,69 +96,60 @@ public class Attack {
 
     public int getTotalDamageBonus(){
         int total = 0;
-        for(Bonus b: damageBonuses){
+        for(Bonus b: mDamageBonuses){
             total += b.getValue();
         }
         return total;
     }
 
-    private boolean isCrit(){
-        return (attackRoll >= mCharacter.getCritRange());
-    }
-
-    private void addCritBonus() {
-        if (isCrit()) {
-            mCritBonus = new Bonus(Bonus.BONUS_CRIT, damageRoll);
-            addDamageBonus(mCritBonus);
-            mCharacter.setRaged(true);
-        }
-    }
-
-    private void removeCritBonus(){
-        if (mCritBonus != null){
-            damageBonuses.remove(mCritBonus);
-            mCritBonus = null;
-        }
-    }
-
-    private void removeRageBonus(){
-        if (mRageBonus != null){
-            damageBonuses.remove(mRageBonus);
-            mRageBonus = null;
-        }
+    private void checkCrit(){
+        if (mAttackRoll >= mCharacter.getCritRange()){
+            mCrit = true;
+            mCritRoll = mDamageDice.getTakeTen();
+            Character.getInstance().setRaged(true);
+        } else {
+            mCrit = false;
+            mCritRoll = 0;
+        };
     }
 
     private void addRageBonus(){
-        mRageBonus = mCharacter.getRageBonus();
-        addDamageBonus(mRageBonus);
+        Log.i(MODULE_NAME, "Adding Rage Bonus");
+        addDamageBonus(mCharacter.getRageBonus());
+    }
+
+    private void removeRageBonus(){
+        Iterator<Bonus> it = mDamageBonuses.iterator();
+        while(it.hasNext()){
+            Bonus b = it.next();
+            if (b.getType().equals(Bonus.BONUS_RAGE)) {
+                it.remove();
+            }
+        }
     }
 
     public void calcResults(int attackRoll, int damageRoll){
-        this.attackRoll = attackRoll;
-        this.damageRoll = damageRoll;
+        this.mAttackRoll = attackRoll;
+
+        // If taking ten on the damage roll for this attack, calculate it as the roll.
+        if (this.mTakeTenDamage){
+            this.mDamageRoll = mDamageDice.getTakeTen();
+        } else {
+            this.mDamageRoll = damageRoll;
+        }
 
         // Add crit damage bonus, if applicable.
-        if (isCrit() && mCritBonus==null){
-            addCritBonus();
-        } else if (!isCrit() && mCritBonus!=null) {
-            removeCritBonus();
-        }
+        checkCrit();
 
         // Add rage damage bonus, if applicable.
-        if (mCharacter.isRaged() && mRageBonus==null){
+        removeRageBonus();
+        if (mCharacter.isRaged()){
             addRageBonus();
-        } else if (!mCharacter.isRaged() && mRageBonus!=null) {
-            removeRageBonus();
         }
 
-        this.attackResult = attackRoll + getTotalAttackBonus();
-        this.damageResult = damageRoll + getTotalDamageBonus();
-        // Todo:  Improve UI
-        // Todo:  Code review
-        // Todo:  Add interface for hitDice.
-        // Todo:  Add interface for long and short rest.
-        // Todo:  Add menu options for:  view last attack results;
-        // Todo:  Add interface for temp HP
+        this.mAttackResult = attackRoll + getTotalAttackBonus();
+        this.mDamageResult = mCritRoll + damageRoll + getTotalDamageBonus();
 
+        // Todo:  need an app icon and title
     }
 }

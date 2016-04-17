@@ -35,7 +35,7 @@ public class JSONSaver implements Runnable {
         new Thread(saver).start();
     }
 
-    private JSONSaver (Context context, Character character) {
+    public JSONSaver (Context context, Character character) {
         mContext = context;
         mCharacter = character;
     }
@@ -43,6 +43,8 @@ public class JSONSaver implements Runnable {
     public void run() {
         FileOutputStream outStream = null;
         String outString = "";
+
+        Log.i(MODULE_NAME, "Saving Character");
 
         try {
             JSONObject charJSON = convertCharacter(mCharacter);
@@ -68,7 +70,7 @@ public class JSONSaver implements Runnable {
             json.put ("race", character.getRace());
             json.put ("alignment", character.getAlignment());
             json.put ("XP", character.getXP());
-            json.put ("usedHitDice", character.getUsedHitDice());
+            json.put ("remainingHitDice", character.getRemainingHitDice());
             json.put ("maxhp", character.getMaxHP());
             json.put ("currenthp", character.getCurrentHP());
             json.put ("critRange", character.getCritRange());
@@ -208,6 +210,7 @@ public class JSONSaver implements Runnable {
             json.put("name", attack.getName());
             json.put("stat", attack.getStatType());
             json.put("proficient", attack.isProficient());
+            json.put("takeTenDamage", attack.isTakeTenDamage());
 
             json.put("damageDice", convertDice(attack.getDamageDice()));
 

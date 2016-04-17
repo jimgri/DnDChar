@@ -20,10 +20,9 @@
 
     <string name="attackNum">Attack Number: %1$d</string>
     <string name="roll">Roll: %1$d</string>
+    <string name="crit">Crit: %1$d</string>
     <string name="hit">Hit: %1$d</string>
     <string name="damage">Damage: %1$d</string>
-    <string name="toolbar_attack">Attack!</string>
-    <string name="toolbar_reset">Reset!</string>
     <string name="skillTitle">%1$s Check</string>
     <string name="saveTitle">%1$s Save</string>
     <string name="runningDamage">Total Damage: %1$d</string>
@@ -33,5 +32,21 @@
     <string name="char_skills_tag">char_summary_tag</string>
     <string name="char_feat_tag">char_summary_tag</string>
     <string name="saveFile">char.json</string>
+
+    <string name="nav_char">Character Sheet</string>
+    <string name="nav_char_summary">Summary</string>
+    <string name="nav_char_skills">Skills</string>
+    <string name="nav_char_feats">Feats</string>
+    <string name="nav_attack">Attack</string>
+    <string name="nav_attack_new">New Attack</string>
+    <string name="nav_attack_view">View Last Attack</string>
+
+    <string name="toolbar_shortrest">Short Rest</string>
+    <string name="toolbar_longrest">Long Rest</string>
+    <string name="toolbar_reset">Reset!</string>
+
+    <string name="drawer_open">Menu open</string>
+    <string name="drawer_close">Menu closed</string>
+
 
 </resources>

@@ -9,7 +9,8 @@
     <color name="grey">#FFAAAAAA</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#FF0000FF</color>
-    <color name="dark_red">#FF990000</color>
+    <color name="medium_red">#FFAE0001</color>
+    <color name="dark_red">#FF740001</color>
     <color name="dark_tan">#FFCCCC66</color>
     <color name="light_tan">#FFEEEE88</color>
     <color name="parchment">#FFF1F1D4</color>

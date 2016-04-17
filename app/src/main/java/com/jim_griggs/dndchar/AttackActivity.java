@@ -1,39 +1,32 @@
 package com.jim_griggs.dndchar;
 
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.jim_griggs.model.Attack;
 import com.jim_griggs.model.Character;
-import com.jim_griggs.model.Dice;
-
-import java.util.HashMap;
-
 
 public class AttackActivity extends AppCompatActivity implements RollFragment.RollFragmentListener{
     private static final String MODULE_NAME = "AttackActivity";
 
     LinearLayout mAttackList;
+    // Array to temporarily store the dice rolls until the user clicks "Submit"
     private int[][] mResults;
-    private Character mCharacter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attack);
 
-        mCharacter = Character.getInstance();
-        mResults = new int[mCharacter.getAttacks().size()][2];
+        Character character = Character.getInstance();
+        mResults = new int[character.getAttacks().size()][2];
 
         mAttackList = (LinearLayout) findViewById(R.id.attackList);
 
-        for (int i=0; i < mCharacter.getAttacks().size(); i++){
-            AttackRoll attackView = new AttackRoll(this, i, mCharacter.getAttacks().get(i));
+        // Display each attack roll.  Attack roll includes the Attack and Damage dice rolls.
+        for (int i=0; i < character.getAttacks().size(); i++){
+            AttackRoll attackView = new AttackRoll(this, i, character.getAttacks().get(i));
             mAttackList.addView(attackView);
         }
     }
@@ -44,41 +37,27 @@ public class AttackActivity extends AppCompatActivity implements RollFragment.Ro
 
     public void onDiceRolled(String rollName, int result){
         String[] parts = rollName.split(":");
-
-        Log.i(MODULE_NAME, "onDiceRoll:" + rollName);
-        Log.i(MODULE_NAME, "onDiceRoll:" + parts[1]);
-
         int attackNum = Integer.parseInt(parts[1]);
 
+        // Store the die roll returned to the temporary array.
         if (parts[0].equals("Attack")){
             mResults[attackNum][0] = result;
         } else if (parts[0].equals("Damage")){
             mResults[attackNum][1] = result;
         }
-
-        boolean foundZero = false;
-        for (int[] i: mResults){
-            for (int j: i){
-                if (j == 0){
-                    foundZero = true;
-                    break;
-                }
-            }
-        }
-
-        if (!foundZero){
-            calcResults();
-        }
     }
 
     private void calcResults() {
-        // Move results to the character
-        for (int i = 0; i < mCharacter.getAttacks().size(); i++) {
-            // calc the attack results
-            mCharacter.getAttacks().get(i).calcResults(mResults[i][0], mResults[i][1]);
+        // Move die results from the temporary array to the Character
+        Character character = Character.getInstance();
+        for (int i = 0; i < character.getAttacks().size(); i++) {
+            // Calc the attack results
+            character.getAttacks().get(i).calcResults(mResults[i][0], mResults[i][1]);
         }
-        // finish the activity
+        // Launch the Attack Results Activity
         ActivityController c = new ActivityController(this);
         c.launchAttackResultsActivity();
+        // Call finish in order to release this Activity and remove it from the back stack.
+        finish();
     }
 }

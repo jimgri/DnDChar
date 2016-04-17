@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 import com.jim_griggs.model.*;
-import com.jim_griggs.model.Character;
 
 public class FeatDetailsActivity extends AppCompatActivity {
     public static final String FEAT_DATA = "feat_data";

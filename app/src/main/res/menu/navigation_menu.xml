@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_char"
+            android:title="@string/nav_char">
+            <menu>
+                <item
+                    android:id="@+id/nav_char_summary"
+                    android:title="@string/nav_char_summary" />
+                <item
+                    android:id="@+id/nav_char_skills"
+                    android:title="@string/nav_char_skills" />
+                <item
+                    android:id="@+id/nav_char_feats"
+                    android:title="@string/nav_char_feats" />
+            </menu>
+        </item>
+        <item
+            android:id="@+id/nav_attack"
+            android:title="@string/nav_attack" >
+            <menu>
+                <item
+                    android:id="@+id/nav_attack_new"
+                    android:title="@string/nav_attack_new" />
+                <item
+                    android:id="@+id/nav_attack_view"
+                    android:title="@string/nav_attack_view" />
+            </menu>
+        </item>
+    </group>
+</menu>

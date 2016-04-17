@@ -23,8 +23,6 @@ public class CharSheetBaseFrag extends Fragment {
     private static final int HIT_DICE_COLUMNS = 8;
     private static final String MODULE_NAME = "CharSheetBaseFrag";
 
-    private Character mCharacter;
-
     private TextView charName;
     private TextView charClass;
     private TextView charRace;
@@ -36,8 +34,9 @@ public class CharSheetBaseFrag extends Fragment {
     private TextView charInit;
     private CheckBox charRage;
     private CheckBox charInspiration;
-    private RelativeLayout acBox;
-    private RelativeLayout moveBox;
+    private ViewGroup acBox;
+    private ViewGroup moveBox;
+    private ViewGroup hitDiceBox;
     private LinearLayout statLayout;
     private LinearLayout saveLayout;
     private TextView hitDice;
@@ -56,15 +55,12 @@ public class CharSheetBaseFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i (MODULE_NAME, "onResume Called.");
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mController = new ActivityController(getActivity());
-        mCharacter = Character.getInstance();
     }
 
     @Override
@@ -84,6 +80,7 @@ public class CharSheetBaseFrag extends Fragment {
         charInspiration = (CheckBox) rootView.findViewById(R.id.charInspiration);
         acBox = (RelativeLayout) rootView.findViewById(R.id.acBox);
         moveBox = (RelativeLayout) rootView.findViewById(R.id.moveBox);
+        hitDiceBox = (RelativeLayout) rootView.findViewById(R.id.hit_dice_box);
         statLayout = (LinearLayout) rootView.findViewById(R.id.statLayout);
         saveLayout = (LinearLayout) rootView.findViewById(R.id.saveLayout);
         hitDice = (TextView) rootView.findViewById(R.id.hitDice);
@@ -98,38 +95,47 @@ public class CharSheetBaseFrag extends Fragment {
     }
 
     public void refresh(){
-        charName.setText(mCharacter.getName());
+        Character character = Character.getInstance();
+
+        charName.setText(character.getName());
         charName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 refresh();
             }
         });
-        charClass.setText(String.format("%1$s %2$d", mCharacter.getCharClass(), mCharacter.getLevel()));
-        charRace.setText(mCharacter.getRace());
-        charProf.setText(String.format("%d", mCharacter.getProficiencyBonus().getValue()));
-        charAlignment.setText(mCharacter.getAlignment());
-        charHP.setText(String.format("%1$d / %2$d", mCharacter.getCurrentHP(), mCharacter.getMaxHP()));
-        charInit.setText(toBonusString(mCharacter.getInitiative()));
-        charRage.setChecked(mCharacter.isRaged());
-        charInspiration.setChecked(mCharacter.isInspired());
-        hitDice.setText(String.format("%1$d / %2$d", mCharacter.getRemainingHitDice(), mCharacter.getHitDiceMax()));
+        charClass.setText(String.format("%1$s %2$d", character.getCharClass(), character.getLevel()));
+        charRace.setText(character.getRace());
+        charProf.setText(String.format("%d", character.getProficiencyBonus().getValue()));
+        charAlignment.setText(character.getAlignment());
+        charHP.setText(String.format("%1$d / %2$d", character.getCurrentHP(), character.getMaxHP()));
+        charInit.setText(toBonusString(character.getInitiative()));
+        charRage.setChecked(character.isRaged());
+        charInspiration.setChecked(character.isInspired());
 
-        charMove.setText(String.format("%d", mCharacter.getMovement()));
+        hitDice.setText(String.format("%1$d / %2$d", character.getRemainingHitDice(), character.getHitDiceMax()));
+        hitDiceBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((CharActivity) getActivity()).showHDDialog();
+            }
+        });
+
+        charMove.setText(String.format("%d", character.getMovement()));
         moveBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mController.launchCheckActivity(getString(R.string.moveTitle),
-                        CheckActivity.TYPE_BONUS, mCharacter.getMovementBonuses());
+                        CheckActivity.TYPE_BONUS, Character.getInstance().getMovementBonuses());
             }
         });
 
-        charAC.setText(String.format("%d", mCharacter.getAC()));
+        charAC.setText(String.format("%d", character.getAC()));
         acBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mController.launchCheckActivity(getString(R.string.ACTitle),
-                        CheckActivity.TYPE_BONUS, mCharacter.getACBonuses());
+                        CheckActivity.TYPE_BONUS, Character.getInstance().getACBonuses());
             }
         });
 
@@ -137,7 +143,7 @@ public class CharSheetBaseFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 CheckBox box = (CheckBox) v;
-                mCharacter.setInspired(box.isChecked());
+                Character.getInstance().setInspired(box.isChecked());
             }
         });
 
@@ -145,7 +151,7 @@ public class CharSheetBaseFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 CheckBox box = (CheckBox) v;
-                mCharacter.setRaged(box.isChecked());
+                Character.getInstance().setRaged(box.isChecked());
             }
         });
 
@@ -160,11 +166,10 @@ public class CharSheetBaseFrag extends Fragment {
         statLayout.removeAllViews();
         saveLayout.removeAllViews();
 
-        for (Map.Entry<String, Stat> entry : mCharacter.getStats().entrySet()) {
+        for (Map.Entry<String, Stat> entry : character.getStats().entrySet()) {
             CreateStatView(inflater, statLayout, entry.getValue());
             CreateSaveView(inflater, saveLayout, entry.getValue());
         }
-        Log.i(MODULE_NAME, "Base Fragment Refresh Complete.");
     }
 
     private void CreateStatView(LayoutInflater inflater, ViewGroup parent, Stat stat){

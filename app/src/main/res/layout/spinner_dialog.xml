@@ -21,11 +21,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/damage"
+            android:id="@+id/positive_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Damage">
+            android:text="+">
         </Button>
         <Button
             android:id="@+id/cancel"
@@ -35,11 +35,11 @@
             android:text="Cancel">
         </Button>
         <Button
-            android:id="@+id/heal"
+            android:id="@+id/negative_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Heal">
+            android:text="-">
         </Button>
     </LinearLayout>
 

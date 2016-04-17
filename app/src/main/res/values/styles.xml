@@ -8,7 +8,7 @@
         <item name="windowNoTitle">true</item>
         <!-- Set theme colors from http://www.google.com/design/spec/style/color.html#color-color-palette-->
         <!-- colorPrimary is used for the default action bar background -->
-        <item name="colorPrimary">@color/dark_red</item>
+        <item name="colorPrimary">@color/medium_red</item>
         <!-- colorPrimaryDark is used for the status bar -->
         <item name="colorPrimaryDark">@color/dark_red</item>
         <!-- colorAccent is used as the default value for colorControlActivated

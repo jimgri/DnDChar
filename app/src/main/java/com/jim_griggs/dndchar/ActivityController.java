@@ -2,10 +2,8 @@ package com.jim_griggs.dndchar;
 
 import android.content.Context;
 import android.content.Intent;
-
 import com.jim_griggs.model.Bonus;
 import com.jim_griggs.model.Feat;
-
 import java.io.Serializable;
 import java.util.Collection;
 

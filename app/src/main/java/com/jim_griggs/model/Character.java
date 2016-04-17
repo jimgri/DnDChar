@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Character {
+    private static final String MODULE_NAME = "Character";
+
     public static final String CLASS_BARBARIAN = "Barbarian";
     public static final String CLASS_BARD = "Bard";
     public static final String CLASS_CLERIC = "Cleric";
@@ -54,7 +56,7 @@ public class Character {
     private int maxHP;
     private int currentHP;
     private int hitDiceMax;
-    private int usedHitDice;
+    private int remainingHitDice;
     private Dice hitDie;
     private int critRange;
     private boolean raged;
@@ -80,12 +82,12 @@ public class Character {
     }
 
     private Character(){
-        stats = new LinkedHashMap<String, Stat>();
-        skills = new LinkedHashMap<String, Skill>();
-        ACBonuses = new ArrayList<Bonus>();
-        movementBonuses = new ArrayList<Bonus>();
-        feats = new ArrayList<Feat>();
-        attacks = new ArrayList<Attack>();
+        stats = new LinkedHashMap<>();
+        skills = new LinkedHashMap<>();
+        ACBonuses = new ArrayList<>();
+        movementBonuses = new ArrayList<>();
+        feats = new ArrayList<>();
+        attacks = new ArrayList<>();
     }
 
     public String getName() {return name;}
@@ -103,15 +105,44 @@ public class Character {
     public void setLevel(int level) {
         this.level = level;
         hitDiceMax = this.level;
+        // Todo:  This shouldn't be hard coded.  It should be set based on player class.
         hitDie = new Dice(1,10);
+    }
+
+    public Dice getHitDie(){
+        if (hitDie != null) {
+            return hitDie;
+        }
+        return null;
     }
 
     public int getHitDiceMax() {return hitDiceMax;}
 
-    public int getUsedHitDice() {return usedHitDice;}
-    public int getRemainingHitDice() {return getHitDiceMax() - getUsedHitDice();}
-    // TODO:  validate values.
-    public void setUsedHitDice(int usedHitDice) {this.usedHitDice = usedHitDice;}
+    public void addHitDice(int value){
+        remainingHitDice += value;
+        if (remainingHitDice > hitDiceMax){
+            remainingHitDice = hitDiceMax;
+        }
+    }
+
+    public void subtractHitDice(int value){
+        remainingHitDice -= value;
+        if (remainingHitDice < 0){
+            remainingHitDice = 0;
+        }
+    }
+
+    public void setRemainingHitDice(int remainingHitDice){
+        if (remainingHitDice > hitDiceMax){
+            this.remainingHitDice = hitDiceMax;
+        } else if (remainingHitDice < 0){
+            this.remainingHitDice = 0;
+        } else {
+            this.remainingHitDice = remainingHitDice;
+        }
+    }
+
+    public int getRemainingHitDice() {return remainingHitDice;}
 
     public String getPlayerName() {return playerName;}
     public void setPlayerName(String playerName) {this.playerName = playerName;}
@@ -133,7 +164,9 @@ public class Character {
     public void setCritRange(int critRange) {this.critRange = critRange;}
 
     public boolean isRaged() {return raged;}
-    public void setRaged(boolean raged) {this.raged = raged;}
+    public void setRaged(boolean raged) {
+        this.raged = raged;
+    }
 
     public boolean isInspired() {return inspired;}
     public void setInspired(boolean insired) {this.inspired = insired;}
@@ -284,8 +317,6 @@ public class Character {
         return stats.get(Stat.TYPE_DEX).getStatBonus().getValue();
     }
 
-
-
     public int takeDamage(int damage){
         currentHP -= damage;
         if (currentHP < 0){
@@ -306,5 +337,29 @@ public class Character {
         currentHP = maxHP;
         return currentHP;
     }
+
+    public void shortRest(){
+        // Reset appropriate activity usage.
+        for (Feat f: feats){
+            if (f.getRefresh().equals(Feat.REFRESH_SHORTREST)){
+                f.setCurrentUsage(0);
+            }
+        }
+    }
+
+    public void longRest(){
+        // Restore all hit points.
+        healFull();
+        // Restore half hit dice.
+        int restore = level / 2;
+        addHitDice(restore);
+        // Reset appropriate activity usage.
+        for (Feat f: feats){
+            if (f.getRefresh().equals(Feat.REFRESH_SHORTREST) || f.getRefresh().equals(Feat.REFRESH_LONGREST)){
+                f.setCurrentUsage(0);
+            }
+        }
+    }
+
 }
 

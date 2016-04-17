@@ -6,17 +6,22 @@ import java.io.Serializable;
  * Created by TDEVJWG on 3/16/2016.
  */
 public class Dice implements Serializable{
-    private int dieNum;
-    private int dieType;
+    private int mDieNum;
+    private int mDieType;
 
     public Dice (int dieNum, int dieType) {
-        this.dieNum = dieNum;
-        this.dieType = dieType;
+        this.mDieNum = dieNum;
+        this.mDieType = dieType;
     }
 
-    public void setDieNum(int dieNum) { this.dieNum = dieNum; }
-    public int getDieNum() { return this.dieNum; }
+    public void setDieNum(int dieNum) { this.mDieNum = dieNum; }
+    public int getDieNum() { return this.mDieNum; }
 
-    public void setDieType(int dieType) { this.dieType = dieType; }
-    public int getDieType() { return this.dieType; }
+    public void setDieType(int dieType) { this.mDieType = dieType; }
+    public int getDieType() { return this.mDieType; }
+
+    public int getTakeTen(){
+        int dieValue = (mDieType/2)+1;
+        return dieValue * mDieNum;
+    }
 }

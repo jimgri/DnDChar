@@ -163,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
                 <RelativeLayout
+                    android:id="@+id/hit_dice_box"
                     style="@style/data_box_fixed">
                     <TextView
                         style="@style/header_small"

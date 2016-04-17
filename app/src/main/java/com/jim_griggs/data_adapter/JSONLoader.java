@@ -85,21 +85,25 @@ public class JSONLoader {
         try {
             Character.destroyInstance();
             Character character = Character.getInstance();
+
+            // Load the character's level first as this sets max Hit Dice.
+            JSONObject classObject = json.getJSONObject("class");
+            character.setLevel(classObject.getInt("level"));
+            character.setCharClass(classObject.getString("class"));
+
             character.setName(json.getString("name"));
             character.setPlayerName(json.getString("playername"));
             character.setRace(json.getString("race"));
             character.setAlignment(json.getString("alignment"));
             character.setXP(json.getInt("XP"));
-            character.setUsedHitDice(json.getInt("usedHitDice"));
+            Log.i(MODULE_NAME, "JSON remaining Hit Dice: " + json.getInt("remainingHitDice"));
+            character.setRemainingHitDice(json.getInt("remainingHitDice"));
+            Log.i(MODULE_NAME, "Loader setting remaining Hit Dice to : " + character.getRemainingHitDice());
             character.setMaxHP(json.getInt("maxhp"));
             character.setCurrentHP(json.getInt("currenthp"));
             character.setCritRange(json.getInt("critRange"));
             character.setRaged(json.getBoolean("raged"));
             character.setInspired(json.getBoolean("inspiration"));
-
-            JSONObject classObject = json.getJSONObject("class");
-            character.setLevel(classObject.getInt("level"));
-            character.setCharClass(classObject.getString("class"));
 
             JSONArray moveBonuses = json.getJSONArray("movement");
             for (int i=0; i < moveBonuses.length(); i++) {
@@ -148,10 +152,11 @@ public class JSONLoader {
             String name = json.getString("name");
             String statType = json.getString("stat");
             boolean proficient = json.getBoolean("proficient");
+            boolean takeTenDamage = json.getBoolean("takeTenDamage");
             JSONObject damageDice = json.getJSONObject("damageDice");
 
             Dice dice = convertDice(damageDice);
-            Attack newAttack = new Attack(character, name, statType, proficient);
+            Attack newAttack = new Attack(character, name, statType, proficient, takeTenDamage);
             newAttack.setDamageDice(dice);
 
             newAttack.addAttackBonus(character.getStat(statType).getStatBonus());
